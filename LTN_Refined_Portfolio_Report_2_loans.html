@@ -1,0 +1,108 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial; margin: 40px; color: #222; }
+            .header { border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; }
+            .title { font-size: 24px; font-weight: bold; color: #1e3a8a; margin: 0; }
+            .subtitle { font-size: 12px; color: #666; margin-top: 5px; }
+            .executive-summary { background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981; }
+            .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+            .metric-box { background: #fff; border: 1px solid #e5e7eb; padding: 12px; border-radius: 6px; text-align: center; }
+            .metric-value { font-size: 20px; font-weight: bold; color: #1e3a8a; }
+            .metric-label { font-size: 11px; color: #666; margin-top: 5px; }
+            .portfolio-composition { margin: 20px 0; }
+            .portfolio-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+            .portfolio-row strong { color: #1e3a8a; }
+            .recommendations { background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+            .recommendations h3 { margin-top: 0; color: #d97706; }
+            .recommendations li { margin: 8px 0; font-size: 12px; }
+            .footer { text-align: center; font-size: 10px; color: #999; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+            table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 12px; }
+            th { background: #1e3a8a; color: white; padding: 8px; text-align: left; }
+            td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
+            tr:nth-child(even) { background: #f9fafb; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="title">LTN Loan Tape Analyzer - Refined Portfolio Summary</div>
+            <div class="subtitle">Phase 2: Custom Loan Box Assignment Report | Generated January 27, 2026 at 09:13</div>
+        </div>
+        
+        <div class="executive-summary">
+            <strong>Executive Summary:</strong> Portfolio stratification identified <strong>2</strong> loans matching refined criteria 
+            (50.0% of original tape). Weighted metrics demonstrate 
+            <strong>100% in-box assignment rate</strong>, enabling data-driven investment thesis.
+        </div>
+        
+        <div class="metrics">
+            <div class="metric-box">
+                <div class="metric-value">2</div>
+                <div class="metric-label">Loans in Portfolio</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">100.0%</div>
+                <div class="metric-label">In-Box Match Rate</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">$0.2M</div>
+                <div class="metric-label">Total Balance</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">703</div>
+                <div class="metric-label">WA FICO</div>
+            </div>
+        </div>
+        
+        <div class="portfolio-composition">
+            <strong style="color: #1e3a8a;">Portfolio Risk Profile:</strong>
+            <div class="portfolio-row">
+                <span>Weighted Average LTV</span>
+                <strong>77.78%</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Weighted Average DTI</span>
+                <strong>28.73%</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Original Full Tape Count</span>
+                <strong>4 loans</strong>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <h3>📊 Strategic Recommendations</h3>
+            <ul>
+                <li><strong>Portfolio Strength:</strong> 100% in-box rate indicates strong alignment with target credit profiles.</li>
+                <li><strong>Liquidity Profile:</strong> $0.2M portfolio suitable for prime securitization.</li>
+                <li><strong>Next Steps:</strong> Proceed to cashflow modeling and scenario analysis; conduct detailed loss severity review on out-of-box loans (0%).</li>
+                <li><strong>Risk Mitigation:</strong> Apply credit enhancement for 0% OOB population; consider layering with complementary tape if higher in-box % required.</li>
+            </ul>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Loan ID</th>
+                    <th>Product</th>
+                    <th>Box Assignment</th>
+                    <th>FICO</th>
+                    <th>LTV</th>
+                    <th>DTI</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>671</td><td>112.00%</td><td>13.46%</td><td><span style="color: green;"><strong>✓ In</strong></span></td></tr> <tr><td>4</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>735</td><td>43.55%</td><td>44.00%</td><td><span style="color: green;"><strong>✓ In</strong></span></td></tr>
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            LTN Loan Tape Analyzer | Confidential - For ALM First Internal Use<br/>
+            Refinement Filters: FICO [670-750] | LTV ≤115% | DTI ≤45% | Term ≤90 mo | Balance ≤$0.1M
+        </div>
+    </body>
+    </html>
+    

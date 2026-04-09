@@ -1,0 +1,211 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body { font-family: 'Segoe UI', Arial; margin: 40px; color: #222; }
+            .header { border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; }
+            .title { font-size: 24px; font-weight: bold; color: #1e3a8a; margin: 0; }
+            .subtitle { font-size: 12px; color: #666; margin-top: 5px; }
+            .executive-summary { background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981; }
+            .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+            .metric-box { background: #fff; border: 1px solid #e5e7eb; padding: 12px; border-radius: 6px; text-align: center; }
+            .metric-value { font-size: 20px; font-weight: bold; color: #1e3a8a; }
+            .metric-label { font-size: 11px; color: #666; margin-top: 5px; }
+            .portfolio-composition { margin: 20px 0; }
+            .portfolio-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+            .portfolio-row strong { color: #1e3a8a; }
+            .recommendations { background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+            .recommendations h3 { margin-top: 0; color: #d97706; }
+            .recommendations li { margin: 8px 0; font-size: 12px; }
+            .footer { text-align: center; font-size: 10px; color: #999; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+            table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 12px; }
+            th { background: #1e3a8a; color: white; padding: 8px; text-align: left; }
+            td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
+            tr:nth-child(even) { background: #f9fafb; }
+        </style>
+    </head>
+    <body>
+        <div class="header"> 
+            <div class="title">LTN Portfolio Summary - Capital Flow AI</div>
+            <div class="subtitle">Custom Loan Box Assignment Report | Generated February 21, 2026 at 18:33</div>
+        </div>
+        
+        <div class="executive-summary">
+            <strong>Executive Summary:</strong> Tape processed <strong>49</strong> loans total. 
+            Pre-refinement box rules matched <strong>9</strong> loans 
+            (<strong>18%</strong> capture rate). Post-refinement filters retained 
+            <strong>5</strong> loans (<strong>56%</strong> retention | 
+            <strong>10%</strong> final yield). Portfolio demonstrates strong box 
+            alignment for immediate capital deployment.
+        </div>
+        
+        <div class="metrics">
+            <div class="metric-box">
+                <div class="metric-value">18.4%</div>
+                <div class="metric-label">Tape Match Rate</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">55.6%</div>
+                <div class="metric-label">Filter Retention</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">10.2%</div>
+                <div class="metric-label">Final Yield</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">$0.4M</div>
+                <div class="metric-label">Total Balance</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">701</div>
+                <div class="metric-label">Avg FICO</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-value">5</div>
+                <div class="metric-label">Filtered Loans</div>
+            </div>
+        </div>
+
+        <div class="portfolio-composition">
+            <strong style="color: #1e3a8a;">Portfolio Risk Profile:</strong>
+            <div class="portfolio-row">
+                <span>Average LTV</span>
+                <strong>70.5%</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Average DTI</span>
+                <strong>26.6%</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Weighted Average Interest Rate (%)</span>
+                <strong>9.0%</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Original Tape Size</span>
+                <strong>49 loans</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Box Matched Loans</span>
+                <strong>9 (18.4%)</strong>
+            </div>
+            <div class="portfolio-row">
+                <span>Final Filtered Loans</span>
+                <strong>5 (10.2%)</strong>
+            </div>
+        </div>
+
+        <!-- Yield Target Compliance -->
+        <strong style="color: #1e3a8a;">Yield Target Compliance (WA Rate Band Assessment):</strong>
+        <div class="yield-compliance">
+            <div style="font-size: 1.1em; margin: 10px 0;">✅ Portfolio meets target (WA Rate 9.0% within 5–15% band).</div>
+        </div>
+
+        <div class="portfolio-composition">
+            <strong style="color: #1e3a8a;">Column Mapping Summary:</strong>
+
+            <div class="portfolio-row">
+                <span>Raw non‑standard columns</span>
+                <strong>14 of 16 columns (88%)</strong>
+            </div>
+            <div class="portfolio-row" style="font-size: 0.85rem; opacity: 0.8;">
+                <span> </span>
+                <span>Includes alias headers, missing headers, and unusual column names.</span>
+            </div>
+
+            <div class="portfolio-row">
+                <span>Dictionary mappings</span>
+                <strong>7 of 16 columns (44%)</strong>
+            </div>
+            <div class="portfolio-row" style="font-size: 0.85rem; opacity: 0.8;">
+                <span> </span>
+                <span>Mapped using predefined ALM First's standard column name catalog.</span>
+            </div>
+
+            <div class="portfolio-row">
+                <span>AI semantic mappings</span>
+                <strong>6 of 16 columns (38%)</strong>
+            </div>
+            <div class="portfolio-row" style="font-size: 0.85rem; opacity: 0.8;">
+                <span> </span>
+                <span>Mapped using similarity scores and pattern‑aware AI matching.</span>
+            </div>
+
+            <div class="portfolio-row">
+                <span>Unmapped / flagged for review</span>
+                <strong>1 of 16 columns (6%)</strong>
+            </div>
+            <div class="portfolio-row" style="font-size: 0.85rem; opacity: 0.8;">
+                <span> </span>
+                <span>Held out for manual review to preserve data quality.</span>
+            </div>
+        </div>
+
+
+         <!-- NEW: Filter & Criteria Summary block -->
+        <div class="filter-summary" style="margin-top: 16px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; background-color: #f9fafb;">
+            <strong style="color: #1e3a8a;">Filter &amp; Criteria Summary:</strong>
+            <div style="margin-top: 6px; font-size: 12px;">
+                <div><strong>Filters Applied:</strong>
+                    FICO [650-800] |
+                    LTV 0-115% |
+                    DTI 0-45% |
+                    Term 12-84 mo |
+                    Balance $0.0M-$0.1M |
+                    Rate 0.0-18.0% |
+                    Days PD 0-40
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <h3>📊 Strategic Recommendations</h3>
+            <ul>
+                <li><strong>Portfolio Strength:</strong> 18.4% tape cracking → 55.6% refined retention = 10.2% deployable yield.</li>
+                <li><strong>Liquidity Profile:</strong> $0.4M portfolio suitable for 
+                    non-QM/alt-A.
+                </li>
+                <li><strong>Next Steps:</strong> Advance 5 loans to pricing engine; model 89.8% tape remainder for re-underwriting.</li>
+                <li><strong>Risk Mitigation:</strong> Apply servicer advance on 81.6% OOB; blend with higher-FICO tape for ABS eligibility.</li
+            </ul>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Loan ID</th>
+                    <th>Product</th>
+                    <th>Box ID</th>
+                    <th>FICO</th>
+                    <th>LTV</th>
+                    <th>DTI</th>
+                    <th>Orig Bal</th>
+                    <th>Cur Bal</th>
+                    <th>Rate</th>
+                    <th>DPD</th>
+                    <th>Term</th>
+                    <th>Maturity</th>
+                    <th>Year</th>
+                    <th>State</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2</td><td>AUTO_NEW</td><td>AUTO_NEW_660_669</td><td>663</td><td>94.00%</td><td>39.00%</td><td>$83K</td><td>$69K</td><td>12.1%</td><td>38</td><td>62mo</td><td>2030-11-18</td><td>2009</td><td>TX</td><td><span style="color: green;"><strong>✓ PASS</strong></span></td></tr> <tr><td>4</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>741</td><td>43.55%</td><td>44.00%</td><td>$88K</td><td>$144K</td><td>3.5%</td><td>31</td><td>80mo</td><td>2027-08-15</td><td>2013</td><td>TX</td><td><span style="color: green;"><strong>✓ PASS</strong></span></td></tr> <tr><td>8</td><td>AUTO_NEW</td><td>AUTO_NEW_670_699</td><td>673</td><td>91.23%</td><td>21.06%</td><td>$45K</td><td>$101K</td><td>0.0%</td><td>0</td><td>25mo</td><td>2027-04-21</td><td>2022</td><td>TX</td><td><span style="color: green;"><strong>✓ PASS</strong></span></td></tr> <tr><td>11</td><td>AUTO_NEW</td><td>AUTO_NEW_670_699</td><td>689</td><td>73.91%</td><td>26.06%</td><td>$50K</td><td>$9K</td><td>6.0%</td><td>0</td><td>46mo</td><td>2027-12-07</td><td>2006</td><td>TX</td><td><span style="color: green;"><strong>✓ PASS</strong></span></td></tr> <tr><td>34</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>738</td><td>49.87%</td><td>2.73%</td><td>$109K</td><td>$63K</td><td>16.2%</td><td>0</td><td>76mo</td><td>2030-03-04</td><td>2024</td><td>TX</td><td><span style="color: green;"><strong>✓ PASS</strong></span></td></tr>  
+            </tbody>
+
+        </table>
+        
+        <div class="footer">
+            LTN Loan Tape Analyzer | Confidential - For Capital Flow AI Internal Use<br/>
+            Filters Applied: FICO [650-800] | 
+            LTV 0-115% | 
+            DTI 0-45% | 
+            Term 12-84 mo | 
+            Balance $0.0M-$0.1M | 
+            Rate 0.0-18.0% | 
+            Days PD 0-40
+        </div>
+    </body>
+    </html>
+    

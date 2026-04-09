@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Arial; margin: 40px; color: #222; }
+        .header { border-bottom: 3px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; }
+        .title { font-size: 24px; font-weight: bold; color: #1e3a8a; margin: 0; }
+        .subtitle { font-size: 12px; color: #666; margin-top: 5px; }
+        .executive-summary { background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981; }
+        .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .metric-box { background: #fff; border: 1px solid #e5e7eb; padding: 12px; border-radius: 6px; text-align: center; }
+        .metric-value { font-size: 20px; font-weight: bold; color: #1e3a8a; }
+        .metric-label { font-size: 11px; color: #666; margin-top: 5px; }
+        .portfolio-composition { margin: 20px 0; }
+        .portfolio-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+        .portfolio-row strong { color: #1e3a8a; }
+        .recommendations { background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+        .recommendations h3 { margin-top: 0; color: #d97706; }
+        .recommendations li { margin: 8px 0; font-size: 12px; }
+        .footer { text-align: center; font-size: 10px; color: #999; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 12px; }
+        th { background: #1e3a8a; color: white; padding: 8px; text-align: left; }
+        td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
+        tr:nth-child(even) { background: #f9fafb; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">LTN Portfolio Summary — Capital Flow AI</div>
+        <div class="subtitle">Custom Loan Box Assignment Report | Generated April 08, 2026 at 10:32</div>
+    </div>
+
+    <div class="executive-summary">
+        <strong>Executive Summary:</strong> Tape processed <strong>551</strong> loans total.
+        Pre-refinement box rules matched <strong>95</strong> loans
+        (<strong>17%</strong> capture rate). Post-refinement filters retained
+        <strong>43</strong> loans (<strong>45%</strong> retention |
+        <strong>8%</strong> final yield).
+    </div>
+
+    <div class="metrics">
+        <div class="metric-box"><div class="metric-value">17.2%</div><div class="metric-label">Tape Match Rate</div></div>
+        <div class="metric-box"><div class="metric-value">45.3%</div><div class="metric-label">Filter Retention</div></div>
+        <div class="metric-box"><div class="metric-value">7.8%</div><div class="metric-label">Final Yield</div></div>
+        <div class="metric-box"><div class="metric-value">$2.7M</div><div class="metric-label">Total Balance</div></div>
+        <div class="metric-box"><div class="metric-value">737</div><div class="metric-label">Avg FICO</div></div>
+        <div class="metric-box"><div class="metric-value">43</div><div class="metric-label">Filtered Loans</div></div>
+    </div>
+
+    <div class="portfolio-composition">
+        <strong style="color: #1e3a8a;">Portfolio Risk Profile:</strong>
+        <div class="portfolio-row"><span>Average LTV</span><strong>55.5%</strong></div>
+        <div class="portfolio-row"><span>Average DTI</span><strong>21.9%</strong></div>
+        <div class="portfolio-row"><span>Weighted Average Interest Rate</span><strong>8.0%</strong></div>
+        <div class="portfolio-row"><span>Original Tape Size</span><strong>551 loans</strong></div>
+        <div class="portfolio-row"><span>Box Matched Loans</span><strong>95 (17.2%)</strong></div>
+        <div class="portfolio-row"><span>Final Filtered Loans</span><strong>43 (7.8%)</strong></div>
+    </div>
+
+    <strong style="color: #1e3a8a;">Yield Target Compliance (WA Rate Band Assessment):</strong>
+    <div style="font-size: 1.1em; margin: 10px 0;">✅ Portfolio meets target (WA Rate 8.0% within 5–15% band).</div>
+
+    <div class="filter-summary" style="margin-top: 16px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; background-color: #f9fafb;">
+        <strong style="color: #1e3a8a;">Filter &amp; Criteria Summary:</strong>
+        <div style="margin-top: 6px; font-size: 12px;">
+            FICO [0–850] |
+            LTV 0–200% |
+            DTI 0–100% |
+            Term 0–999 mo |
+            Balance $0.0M–$1000.0M |
+            Rate 0.0–18.0% |
+            Days PD 0–999
+        </div>
+    </div>
+
+    <div class="recommendations">
+        <h3>📊 Strategic Recommendations</h3>
+        <ul>
+            <li><strong>Portfolio Strength:</strong> 17.2% tape cracking → 45.3% refined retention = 7.8% deployable yield.</li>
+            <li><strong>Liquidity Profile:</strong> $2.7M portfolio suitable for special servicer pools.</li>
+            <li><strong>Next Steps:</strong> Advance 43 loans to pricing engine; model 92.2% tape remainder for re-underwriting.</li>
+            <li><strong>Risk Mitigation:</strong> Apply servicer advance on 82.8% OOB; blend with higher-FICO tape for ABS eligibility.</li>
+        </ul>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Loan ID</th><th>Product</th><th>Box ID</th><th>FICO</th>
+                <th>LTV</th><th>DTI</th><th>Orig Bal</th><th>Cur Bal</th>
+                <th>Rate</th><th>DPD</th><th>Term</th><th>Maturity</th>
+                <th>Year</th><th>State</th><th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>53</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>698</td><td>60.65%</td><td>5.14%</td><td>$15K</td><td>$122K</td><td>13.3%</td><td>0</td><td>25.0mo</td><td>2026-10-25</td><td>2018</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>71</td><td>AUTO_NEW</td><td>AUTO_NEW_670_699</td><td>674</td><td>101.48%</td><td>17.19%</td><td>$19K</td><td>$16K</td><td>13.2%</td><td>21</td><td>79.0mo</td><td>2030-04-09</td><td>2023</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>93</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>728</td><td>7.14%</td><td>22.05%</td><td>$31K</td><td>$91K</td><td>10.6%</td><td>0</td><td>75.0mo</td><td>2026-05-23</td><td>2012</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>106</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>700</td><td>93.45%</td><td>17.15%</td><td>$10K</td><td>$111K</td><td>8.8%</td><td>0</td><td>37.0mo</td><td>2028-06-23</td><td>2015</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>139</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>723</td><td>107.44%</td><td>40.52%</td><td>$11K</td><td>$135K</td><td>16.2%</td><td>0</td><td>48.0mo</td><td>2027-02-03</td><td>2024</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>178</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>747</td><td>45.48%</td><td>22.57%</td><td>$37K</td><td>$141K</td><td>12.2%</td><td>0</td><td>48.0mo</td><td>2027-07-18</td><td>2015</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>187</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>756</td><td>30.90%</td><td>41.15%</td><td>$137K</td><td>$80K</td><td>8.9%</td><td>0</td><td>30.0mo</td><td>2026-05-07</td><td>2015</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>202</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>751</td><td>30.41%</td><td>48.95%</td><td>$30K</td><td>$26K</td><td>2.4%</td><td>0</td><td>75.0mo</td><td>2030-08-18</td><td>2005</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>212</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>771</td><td>80.98%</td><td>32.47%</td><td>$132K</td><td>$142K</td><td>12.5%</td><td>0</td><td>39.0mo</td><td>2027-03-14</td><td>2017</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>227</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>767</td><td>29.43%</td><td>42.41%</td><td>$17K</td><td>$0K</td><td>4.5%</td><td>0</td><td>35.0mo</td><td>2026-12-06</td><td>2021</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>247</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>777</td><td>10.06%</td><td>9.94%</td><td>$19K</td><td>$75K</td><td>13.9%</td><td>19</td><td>39.0mo</td><td>2028-11-04</td><td>2012</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>251</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>709</td><td>87.96%</td><td>4.60%</td><td>$134K</td><td>$15K</td><td>10.2%</td><td>24</td><td>30.0mo</td><td>2027-06-29</td><td>2009</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>252</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>746</td><td>32.60%</td><td>12.74%</td><td>$68K</td><td>$148K</td><td>16.3%</td><td>0</td><td>35.0mo</td><td>2027-07-10</td><td>2010</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>267</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>716</td><td>35.21%</td><td>13.97%</td><td>$133K</td><td>$6K</td><td>1.1%</td><td>29</td><td>82.0mo</td><td>2026-11-29</td><td>2013</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>278</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>718</td><td>73.71%</td><td>9.81%</td><td>$133K</td><td>$65K</td><td>13.4%</td><td>0</td><td>70.0mo</td><td>2030-08-16</td><td>2019</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>280</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>796</td><td>6.27%</td><td>29.51%</td><td>$28K</td><td>$92K</td><td>17.2%</td><td>0</td><td>21.0mo</td><td>2026-09-30</td><td>2017</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>288</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>780</td><td>16.66%</td><td>51.00%</td><td>$65K</td><td>$80K</td><td>9.9%</td><td>0</td><td>49.0mo</td><td>2026-10-15</td><td>2013</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>290</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>670</td><td>85.46%</td><td>7.99%</td><td>$91K</td><td>$42K</td><td>7.0%</td><td>0</td><td>84.0mo</td><td>2032-03-12</td><td>2021</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>291</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>791</td><td>86.43%</td><td>24.23%</td><td>$139K</td><td>$103K</td><td>7.5%</td><td>0</td><td>42.0mo</td><td>2027-12-23</td><td>2022</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>300</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>768</td><td>27.00%</td><td>23.95%</td><td>$92K</td><td>$90K</td><td>1.8%</td><td>0</td><td>54.0mo</td><td>2026-06-01</td><td>2019</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>310</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>710</td><td>113.90%</td><td>10.11%</td><td>$79K</td><td>$8K</td><td>4.8%</td><td>0</td><td>21.0mo</td><td>2026-09-13</td><td>2011</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>318</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>748</td><td>74.95%</td><td>23.09%</td><td>$47K</td><td>$10K</td><td>8.1%</td><td>28</td><td>38.0mo</td><td>2026-09-25</td><td>2006</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>323</td><td>AUTO_NEW</td><td>AUTO_NEW_670_699</td><td>690</td><td>110.82%</td><td>7.87%</td><td>$20K</td><td>$65K</td><td>15.8%</td><td>0</td><td>83.0mo</td><td>2026-11-03</td><td>2016</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>334</td><td>AUTO_USED</td><td>AUTO_USED_660_669</td><td>660</td><td>81.73%</td><td>22.97%</td><td>$39K</td><td>$65K</td><td>6.2%</td><td>0</td><td>33.0mo</td><td>2027-06-24</td><td>2018</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>339</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>706</td><td>66.44%</td><td>15.07%</td><td>$115K</td><td>$118K</td><td>2.4%</td><td>0</td><td>70.0mo</td><td>2031-04-23</td><td>2020</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>377</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>777</td><td>54.50%</td><td>31.63%</td><td>$46K</td><td>$63K</td><td>10.2%</td><td>0</td><td>31.0mo</td><td>2027-06-26</td><td>2019</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>404</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>774</td><td>55.38%</td><td>19.64%</td><td>$125K</td><td>$61K</td><td>10.6%</td><td>0</td><td>75.0mo</td><td>2031-04-12</td><td>2025</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>406</td><td>AUTO_NEW</td><td>AUTO_NEW_670_699</td><td>686</td><td>1.66%</td><td>8.84%</td><td>$8K</td><td>$111K</td><td>2.7%</td><td>0</td><td>45.0mo</td><td>2027-01-20</td><td>2007</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>409</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>773</td><td>38.76%</td><td>46.17%</td><td>$147K</td><td>$37K</td><td>1.9%</td><td>0</td><td>70.0mo</td><td>2029-01-10</td><td>2011</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>429</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>784</td><td>20.50%</td><td>1.87%</td><td>$147K</td><td>$84K</td><td>8.6%</td><td>0</td><td>38.0mo</td><td>2028-02-27</td><td>2023</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>432</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>780</td><td>23.00%</td><td>12.46%</td><td>$25K</td><td>$137K</td><td>14.2%</td><td>0</td><td>82.0mo</td><td>2029-12-03</td><td>2008</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>435</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>744</td><td>103.54%</td><td>19.66%</td><td>$56K</td><td>$57K</td><td>5.8%</td><td>0</td><td>64.0mo</td><td>2027-07-30</td><td>2019</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>439</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>787</td><td>91.91%</td><td>19.11%</td><td>$54K</td><td>$38K</td><td>3.9%</td><td>0</td><td>54.0mo</td><td>2028-01-22</td><td>2008</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>448</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>746</td><td>19.61%</td><td>19.96%</td><td>$58K</td><td>$148K</td><td>5.4%</td><td>0</td><td>84.0mo</td><td>2030-08-11</td><td>2011</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>461</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>792</td><td>49.53%</td><td>45.96%</td><td>$21K</td><td>$21K</td><td>8.3%</td><td>0</td><td>47.0mo</td><td>2026-06-16</td><td>2025</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>462</td><td>AUTO_NEW</td><td>AUTO_NEW_700_749</td><td>731</td><td>47.22%</td><td>43.82%</td><td>$78K</td><td>$144K</td><td>4.0%</td><td>0</td><td>53.0mo</td><td>2029-05-11</td><td>2024</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>467</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>746</td><td>82.89%</td><td>19.14%</td><td>$68K</td><td>$111K</td><td>13.4%</td><td>12</td><td>67.0mo</td><td>2026-09-21</td><td>2021</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>487</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>716</td><td>4.21%</td><td>18.26%</td><td>$70K</td><td>$28K</td><td>13.8%</td><td>0</td><td>79.0mo</td><td>2027-07-29</td><td>2022</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>504</td><td>AUTO_NEW</td><td>AUTO_NEW_750PLUS</td><td>783</td><td>72.75%</td><td>29.06%</td><td>$74K</td><td>$44K</td><td>9.9%</td><td>0</td><td>44.0mo</td><td>2029-02-12</td><td>2015</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>523</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>671</td><td>50.29%</td><td>22.39%</td><td>$73K</td><td>$140K</td><td>5.4%</td><td>0</td><td>41.0mo</td><td>2028-10-04</td><td>2016</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>550</td><td>AUTO_USED</td><td>AUTO_USED_700_749</td><td>731</td><td>45.07%</td><td>11.79%</td><td>$16K</td><td>$123K</td><td>1.0%</td><td>0</td><td>23.0mo</td><td>2026-09-01</td><td>2019</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>571</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>690</td><td>104.73%</td><td>7.35%</td><td>$7K</td><td>$135K</td><td>3.5%</td><td>22</td><td>38.0mo</td><td>2026-10-04</td><td>2011</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr> <tr><td>596</td><td>AUTO_USED</td><td>AUTO_USED_670_699</td><td>674</td><td>24.86%</td><td>10.00%</td><td>$6K</td><td>$55K</td><td>7.7%</td><td>0</td><td>65.0mo</td><td>2027-11-28</td><td>2018</td><td>TX</td><td><span style="color:green"><strong>✓ PASS</strong></span></td></tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        LTN Loan Tape Analyzer | Confidential — Capital Flow AI Internal Use<br/>
+        Filters: FICO [0–850] | LTV 0–200% |
+        DTI 0–100% | Term 0–999 mo |
+        Rate 0.0–18.0% | Days PD 0–999
+    </div>
+</body>
+</html>
