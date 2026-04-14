@@ -1,0 +1,3569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital Flow AI — Portfolio Co-Pilot</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep:    #0d1421;
+    --bg-mid:     #0f172a;
+    --bg-card:    #1e2d45;
+    --bg-card2:   #162236;
+    --border:     #2d4a6b;
+    --border-dim: #1e2d45;
+    --text-pri:   #e2e8f0;
+    --text-sec:   #94a3b8;
+    --text-dim:   #64748b;
+    --blue:       #1d4ed8;
+    --blue-lt:    #3b82f6;
+    --blue-pale:  #60a5fa;
+    --cyan:       #0ea5e9;
+    --emerald:    #10b981;
+    --emerald-dk: #064e3b;
+    --amber:      #f59e0b;
+    --rose:       #f43f5e;
+    --violet:     #8b5cf6;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-mid);
+    color: var(--text-pri);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    height: 52px;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: white;
+  }
+  .logo-text { font-size: 15px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.4px; }
+  .logo-sub  { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 1px; }
+
+  .topbar-center {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    border-radius: 6px; padding: 5px 12px; cursor: pointer;
+    color: var(--text-dim); font-size: 11px;
+  }
+  .topbar-center:hover { border-color: var(--border); }
+
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: var(--emerald);
+    background: #064e3b22; border: 1px solid #065f4622;
+    border-radius: 12px; padding: 3px 10px;
+  }
+  .dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+  .persona-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px 4px 5px; cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .persona-btn:hover { border-color: var(--blue-lt); }
+  .persona-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; color: white;
+  }
+  .persona-name { font-size: 11px; color: var(--text-sec); }
+  .persona-role { font-size: 9px; color: var(--cyan); font-weight: 500; }
+
+  /* ─── LAYOUT ─── */
+  .app-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 56px;
+    background: var(--bg-deep);
+    border-right: 1px solid var(--border-dim);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 14px 0; gap: 2px; flex-shrink: 0;
+  }
+  .nav-item {
+    width: 40px; height: 40px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-dim);
+    transition: all 0.15s; position: relative;
+  }
+  .nav-item:hover { background: var(--bg-card); color: var(--text-sec); }
+  .nav-item.active { background: #1e3a8a; color: var(--blue-pale); }
+  .nav-item svg { width: 18px; height: 18px; }
+  .nav-sep { width: 30px; height: 1px; background: var(--border-dim); margin: 6px 0; }
+  .nav-tooltip {
+    position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+    background: #0d1421; border: 1px solid var(--border);
+    color: var(--text-sec); font-size: 11px; padding: 4px 10px;
+    border-radius: 5px; white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity 0.15s; z-index: 200;
+  }
+  .nav-item:hover .nav-tooltip { opacity: 1; }
+
+  /* ─── PAGES ─── */
+  .page { display: none; flex: 1; overflow: hidden; }
+  .page.active { display: flex; }
+
+  /* ─── SCROLLABLE CONTENT ─── */
+  .content-scroll {
+    flex: 1; overflow-y: auto; padding: 22px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .content-scroll::-webkit-scrollbar { width: 4px; }
+  .content-scroll::-webkit-scrollbar-track { background: transparent; }
+  .content-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ─── SECTION LABEL ─── */
+  .sec-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--text-dim); font-weight: 500; margin-bottom: 8px;
+  }
+  .page-title {
+    font-size: 20px; font-weight: 700; color: #f1f5f9;
+    letter-spacing: -0.4px;
+  }
+  .page-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+
+  /* ─── STAT CARDS ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-val { font-size: 24px; font-weight: 700; color: #f1f5f9; margin: 4px 0; font-family: 'DM Mono', monospace; letter-spacing: -1px; }
+  .stat-delta { font-size: 11px; }
+  .up { color: var(--emerald); }
+  .dn { color: var(--rose); }
+  .neu { color: var(--text-dim); }
+
+  /* ─── GRID CARDS ─── */
+  .route-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .route-card {
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    border-radius: 9px; padding: 14px 15px; cursor: pointer;
+    transition: all 0.15s; position: relative; overflow: hidden;
+  }
+  .route-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; opacity: 0; transition: opacity 0.2s;
+  }
+  .route-card:hover { border-color: var(--blue-lt); transform: translateY(-1px); }
+  .route-card:hover::before { opacity: 1; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .route-card.live-a::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); opacity: 1; }
+  .route-card.v2 { border-style: dashed; border-color: #2d4a6b66; opacity: 0.65; }
+  .route-card.v2:hover { opacity: 0.85; border-color: var(--border); }
+
+  .rcard-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .rcard-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rcard-icon svg { width: 17px; height: 17px; }
+  .badge {
+    font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+  .badge-live { background: #064e3b; color: var(--emerald); }
+  .badge-v2   { background: var(--bg-card2); color: var(--text-dim); border: 1px solid var(--border-dim); }
+  .rcard-name { font-size: 13px; font-weight: 600; color: var(--text-pri); margin-bottom: 5px; }
+  .rcard-sub  { font-size: 10px; color: var(--text-dim); letter-spacing: 0.4px; font-family: 'DM Mono', monospace; margin-bottom: 6px; }
+  .rcard-desc { font-size: 11px; color: var(--text-sec); line-height: 1.55; margin-bottom: 9px; }
+  .rcard-query {
+    font-size: 10px; color: #38bdf8; font-family: 'DM Mono', monospace;
+    background: #0d1a2e; border-left: 2px solid var(--blue);
+    padding: 5px 9px; border-radius: 0 4px 4px 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ─── CHAT PANEL (shared) ─── */
+  .chat-panel {
+    width: 300px; background: var(--bg-deep);
+    border-left: none;
+    display: flex; flex-direction: column; flex-shrink: 0;
+    min-width: 220px; max-width: 520px;
+    transition: none;
+  }
+
+  /* Resize handle between content and chat */
+  .pane-resize-handle {
+    width: 5px; flex-shrink: 0;
+    background: var(--border-dim); cursor: col-resize;
+    transition: background 0.15s; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pane-resize-handle:hover,
+  .pane-resize-handle.dragging { background: var(--blue-lt); }
+  .pane-resize-handle::after {
+    content: '';
+    width: 1px; height: 32px;
+    background: currentColor; border-radius: 1px; opacity: 0.5;
+  }
+  .chat-header {
+    padding: 14px 16px 12px; border-bottom: 1px solid var(--border-dim);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .chat-title { font-size: 12px; font-weight: 600; color: var(--text-pri); }
+  .chat-sub   { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .chat-live  { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--emerald); }
+
+  .persona-strip {
+    padding: 8px 12px; border-bottom: 1px solid var(--border-dim);
+  }
+  .p-strip-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .p-strip-opts  { display: flex; gap: 4px; }
+  .p-opt {
+    flex: 1; text-align: center; padding: 4px 2px; border-radius: 5px;
+    font-size: 9px; cursor: pointer; color: var(--text-dim); border: 1px solid transparent;
+    transition: all 0.12s;
+  }
+  .p-opt:hover  { background: var(--bg-card); color: var(--text-sec); }
+  .p-opt.sel    { background: #1e3a8a; color: #93c5fd; border-color: var(--blue); }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .chat-messages::-webkit-scrollbar { width: 3px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: var(--border-dim); }
+
+  .msg {
+    padding: 9px 11px; border-radius: 8px;
+    font-size: 11.5px; line-height: 1.5; max-width: 90%;
+  }
+  .msg-bot  {
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    color: #cbd5e1; align-self: flex-start; border-radius: 3px 8px 8px 8px;
+  }
+  .msg-user {
+    background: #1e3a8a; color: #bfdbfe;
+    align-self: flex-end; border-radius: 8px 3px 8px 8px;
+  }
+  .msg-tag {
+    font-size: 9px; color: var(--cyan); font-family: 'DM Mono', monospace;
+    margin-bottom: 3px; display: block; opacity: 0.8;
+  }
+  .msg-action {
+    display: inline-block; margin-top: 6px;
+    background: var(--emerald-dk); color: var(--emerald);
+    border: 1px solid #065f46; border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; font-weight: 500; cursor: pointer;
+  }
+  .chip-row  { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+  .chip {
+    font-size: 9.5px; padding: 3px 8px; border-radius: 10px;
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    color: var(--text-dim); cursor: pointer; white-space: nowrap; transition: all 0.12s;
+  }
+  .chip:hover { border-color: var(--blue-lt); color: var(--blue-pale); }
+
+  .chat-footer {
+    padding: 10px 12px; border-top: 1px solid var(--border-dim); flex-shrink: 0;
+  }
+  .chat-input-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .chat-input-pill {
+    flex: 1; display: flex; align-items: center; gap: 6px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px;
+  }
+  .chat-input {
+    flex: 1; background: none; border: none; outline: none;
+    font-size: 11px; color: var(--text-sec); font-family: 'DM Sans', sans-serif;
+  }
+  .chat-input::placeholder { color: var(--text-dim); }
+  .chat-send {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--blue); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 11px; flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .chat-send:hover { background: #2563eb; }
+  .stat-delta-top-cu    { margin-top: 4px; }
+  .stat-delta-top-empty { margin-top: 2px; }
+
+  .chat-attach {
+    width: 26px; height: 26px; border-radius: 5px;
+    background: #1e2d45; border: 1px solid #2d4060;
+    cursor: pointer; display: flex !important; align-items: center; justify-content: center;
+    color: #64748b; flex-shrink: 0; transition: all 0.15s;
+    position: relative; outline: none;
+  }
+  .chat-attach:hover { border-color: var(--blue-lt); color: var(--blue-lt); background: #1e3a8a15; }
+  .chat-attach svg { width: 14px; height: 14px; }
+  .chat-attach-staged {
+    border-color: var(--emerald); color: var(--emerald); background: #064e3b20;
+  }
+  .chat-attach-staged::after {
+    content: '';
+    position: absolute; top: -3px; right: -3px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--emerald); border: 1.5px solid var(--bg-deep);
+  }
+  .chat-file-label {
+    font-size: 9px; color: var(--emerald); font-family: 'DM Mono', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 90px; display: none;
+  }
+  .chat-file-label.visible { display: block; }
+
+  /* ─── TWO-COL LAYOUT ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* ─── TABLE ─── */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; font-size: 10px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 8px 12px; border-bottom: 1px solid var(--border-dim);
+    font-weight: 500;
+  }
+  .data-table td {
+    padding: 10px 12px; font-size: 12px; color: var(--text-sec);
+    border-bottom: 1px solid var(--border-dim)44;
+  }
+  .data-table tr:hover td { background: var(--bg-card2); }
+  .data-table td.mono { font-family: 'DM Mono', monospace; color: var(--text-pri); }
+  .tbl-wrap {
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    border-radius: 9px; overflow: hidden;
+  }
+  .tbl-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border-dim);
+  }
+  .tbl-title { font-size: 13px; font-weight: 600; color: var(--text-pri); }
+
+  /* ─── PANEL CARD ─── */
+  .panel-card {
+    background: var(--bg-card); border: 1px solid var(--border-dim);
+    border-radius: 9px; overflow: hidden;
+  }
+  .panel-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border-dim);
+  }
+  .panel-card-title { font-size: 13px; font-weight: 600; color: var(--text-pri); }
+  .panel-card-body { padding: 16px; }
+
+  /* ─── PHASE STEPS ─── */
+  .phase-steps { display: flex; flex-direction: column; gap: 10px; }
+  .phase-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--bg-card2); border: 1px solid var(--border-dim);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .phase-step.active { border-color: var(--blue); background: #1e3a8a18; }
+  .phase-step.done  { border-color: var(--emerald); background: #064e3b18; }
+  .phase-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .phase-num.num-done   { background: var(--emerald-dk); color: var(--emerald); }
+  .phase-num.num-active { background: #1e3a8a; color: var(--blue-pale); }
+  .phase-num.num-idle   { background: var(--bg-card); color: var(--text-dim); }
+  .phase-info-title  { font-size: 12px; font-weight: 600; color: var(--text-pri); }
+  .phase-info-desc   { font-size: 11px; color: var(--text-sec); margin-top: 2px; line-height: 1.4; }
+  .phase-info-result { font-size: 10px; color: var(--emerald); font-family: 'DM Mono', monospace; margin-top: 5px; }
+
+  /* ─── FILTER FORM ─── */
+  .filter-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .filter-field label { display: block; font-size: 10px; color: var(--text-dim); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-field input, .filter-field select {
+    width: 100%; background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 7px 10px; color: var(--text-pri);
+    font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none;
+  }
+  .filter-field input:focus, .filter-field select:focus { border-color: var(--blue-lt); }
+  .filter-field select option { background: #1e2d45; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 7px; font-size: 12px;
+    font-weight: 600; cursor: pointer; border: none; transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-emerald { background: var(--emerald-dk); color: var(--emerald); border: 1px solid #065f46; }
+  .btn-emerald:hover { background: #065f46; }
+  .btn-ghost { background: var(--bg-card); color: var(--text-sec); border: 1px solid var(--border-dim); }
+  .btn-ghost:hover { border-color: var(--border); color: var(--text-pri); }
+
+  /* ─── MINI BAR CHART ─── */
+  .mini-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .mini-bar-label { font-size: 11px; color: var(--text-sec); width: 120px; flex-shrink: 0; }
+  .mini-bar-track { flex: 1; height: 6px; background: var(--bg-card2); border-radius: 3px; overflow: hidden; }
+  .mini-bar-fill  { height: 100%; border-radius: 3px; }
+  .mini-bar-val   { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-pri); width: 50px; text-align: right; }
+
+  /* ─── MATCH CARD ─── */
+  .match-card {
+    background: var(--bg-card2); border: 1px solid var(--border-dim);
+    border-radius: 8px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color 0.15s; cursor: pointer;
+  }
+  .match-card:hover { border-color: var(--blue-lt); }
+  .match-rank {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .rank-1 { background: #451a03; color: var(--amber); }
+  .rank-2 { background: #1e2d45; color: var(--text-sec); }
+  .rank-3 { background: #162236; color: var(--text-dim); }
+  .match-info { flex: 1; }
+  .match-name { font-size: 12px; font-weight: 600; color: var(--text-pri); }
+  .match-meta { font-size: 10px; color: var(--text-dim); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .match-score {
+    font-size: 18px; font-weight: 700; font-family: 'DM Mono', monospace;
+    color: var(--emerald);
+  }
+  .match-score-label { font-size: 9px; color: var(--text-dim); text-align: right; }
+
+  /* ─── MARKET CHART ─── */
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding-bottom: 4px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .chart-bar { width: 100%; border-radius: 3px 3px 0 0; transition: opacity 0.15s; }
+  .chart-bar:hover { opacity: 0.8; }
+  .chart-bar-label { font-size: 9px; color: var(--text-dim); text-align: center; }
+  .chart-bar-val   { font-size: 9px; color: var(--text-sec); font-family: 'DM Mono', monospace; }
+  .chart-line-track {
+    height: 80px; background: var(--bg-card2); border-radius: 6px;
+    position: relative; overflow: hidden;
+  }
+  .chart-line-svg { width: 100%; height: 100%; }
+
+  /* ─── REPORT ITEMS ─── */
+  .report-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg-card2); border: 1px solid var(--border-dim);
+    border-radius: 8px; padding: 12px 14px; cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .report-item:hover { border-color: var(--blue-lt); }
+  .report-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .report-info { flex: 1; }
+  .report-name  { font-size: 12px; font-weight: 600; color: var(--text-pri); }
+  .report-meta  { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .report-size  { font-size: 10px; color: var(--text-dim); font-family: 'DM Mono', monospace; }
+  .report-dl    { font-size: 11px; color: var(--blue-pale); cursor: pointer; }
+
+  /* ─── SETTINGS ─── */
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 0; border-bottom: 1px solid var(--border-dim)44;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .setting-label { font-size: 12px; color: var(--text-pri); font-weight: 500; }
+  .setting-sub   { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    position: relative; cursor: pointer; transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle.on  { background: var(--blue); border-color: var(--blue); }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%; background: white;
+    transition: transform 0.2s;
+  }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* ─── UPLOAD DROP ZONE ─── */
+  .drop-zone {
+    border: 2px dashed var(--border); border-radius: 10px;
+    padding: 28px 20px; text-align: center; cursor: pointer;
+    background: var(--bg-card2); transition: all 0.2s;
+  }
+  .drop-zone:hover { border-color: var(--blue-lt); background: #1e3a8a10; }
+  .drop-zone-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.5; }
+  .drop-zone-text { font-size: 12px; color: var(--text-dim); }
+  .drop-zone-sub  { font-size: 10px; color: var(--text-dim); margin-top: 4px; opacity: 0.6; }
+
+  /* ─── NCUA COMP TABLE ─── */
+  .comp-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border-dim)44;
+  }
+  .comp-cu   { flex: 1; font-size: 12px; color: var(--text-sec); }
+  .comp-cu.highlight { color: var(--cyan); font-weight: 600; }
+  .comp-bar-wrap { width: 120px; }
+  .comp-val  { width: 48px; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-pri); text-align: right; }
+
+  /* ─── SCROLLBAR global ─── */
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+/* ── Responsive additions ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .chat-panel { width: 0; min-width: 0; overflow: hidden; }
+  .pane-resize-handle { display: none; }
+}
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .route-grid { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .topbar-center { display: none; }
+}
+/* ── scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+  /* ── Welcome Overlay ── */
+  #welcome-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 8000;
+    background: var(--bg-mid, #0f172a);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  #welcome-overlay.show    { display: flex; animation: wc-in  0.45s ease forwards; }
+  #welcome-overlay.dismiss { animation: wc-out 0.45s ease forwards; }
+  @keyframes wc-in  { from{opacity:0;transform:scale(0.97)} to{opacity:1;transform:scale(1)} }
+  @keyframes wc-out { from{opacity:1} to{opacity:0;transform:scale(1.02)} }
+
+  .wc-mark {
+    width: 70px; height: 70px; border-radius: 15px;
+    background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 600; color: white;
+    margin-bottom: 26px; box-shadow: 0 0 40px rgba(29,78,216,0.35);
+  }
+  .wc-greeting {
+    font-size: 32px; font-weight: 800; color: #f1f5f9;
+    letter-spacing: -0.7px; margin-bottom: 12px;
+  }
+  .wc-greeting span { color: #60a5fa; }
+  .wc-tagline {
+    font-size: 13px; color: #94a3b8; max-width: 430px;
+    line-height: 1.7; margin-bottom: 10px;
+  }
+  .wc-tagline em { color: #10b981; font-style: normal; font-weight: 600; }
+  .wc-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: #1e2d45; border: 1px solid #2d4a6b;
+    border-radius: 20px; padding: 5px 14px; margin-bottom: 32px;
+    font-size: 11px; color: #94a3b8;
+  }
+  .wc-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+  .wc-badge-role { color: #0ea5e9; font-weight: 600; }
+  .wc-grid {
+    display: grid; grid-template-columns: repeat(4, 170px);
+    gap: 9px; margin-bottom: 30px;
+  }
+  .wc-card {
+    background: #1e2d45; border: 1px solid #2d4a6b;
+    border-radius: 8px; padding: 13px 14px; text-align: left; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .wc-card:hover { border-color: #3b82f6; background: #1e3050; transform: translateY(-2px); }
+  .wc-card-tag  { font-size: 9px; color: #475569; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; font-family: 'DM Mono', monospace; }
+  .wc-card-name { font-size: 12px; font-weight: 700; color: #e2e8f0; margin-bottom: 3px; }
+  .wc-card-desc { font-size: 10px; color: #64748b; line-height: 1.4; }
+  .wc-skip {
+    font-size: 11px; color: #475569; cursor: pointer;
+    border: none; background: none; font-family: 'DM Sans', sans-serif;
+    padding: 6px 14px; border-radius: 6px; transition: color 0.15s;
+  }
+  .wc-skip:hover { color: #94a3b8; }
+
+  @media (max-width: 800px) {
+    .wc-grid { grid-template-columns: 1fr 1fr; }
+    .wc-greeting { font-size: 24px; }
+  }
+  @media (max-width: 480px) {
+    .wc-grid { grid-template-columns: 1fr; }
+  }
+
+
+  /* ── Chat context badge (e.g. "Loan Boxing" pill next to Portfolio Co-Pilot) ── */
+  .chat-context-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 7px;
+    letter-spacing: 0.2px;
+    vertical-align: middle;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid;
+    transition: all 0.2s;
+  }
+  /* Per-context colour variants */
+  .ctx-all      { background: rgba(30,58,138,0.18);  color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+  .ctx-boxing   { background: rgba(6,78,59,0.22);    color: #6ee7b7; border-color: rgba(16,185,129,0.3); }
+  .ctx-matching { background: rgba(30,58,138,0.22);  color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+  .ctx-market   { background: rgba(8,51,68,0.25);    color: #7dd3fc; border-color: rgba(14,165,233,0.3); }
+  .ctx-docqa    { background: rgba(46,16,101,0.22);  color: #c4b5fd; border-color: rgba(167,139,250,0.3); }
+  .ctx-knowledge{ background: rgba(69,26,3,0.22);    color: #fcd34d; border-color: rgba(245,158,11,0.3); }
+  .ctx-general  { background: rgba(76,5,25,0.22);    color: #fda4af; border-color: rgba(251,113,133,0.3); }
+
+  /* Badge-chat-sm (dual badge on tool cards) */
+  .badge-chat-sm {
+    font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: 600;
+    letter-spacing: 0.3px; background: #083344; color: #0ea5e9;
+    border: 1px solid rgba(14,165,233,0.27);
+  }
+  /* Badge row wrapper */
+  .badge-row { display: flex; align-items: center; gap: 5px; }
+
+  /* Open workspace button in chat messages */
+  .open-workspace-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 8px; padding: 6px 12px; border-radius: 5px;
+    background: #1e2d45; border: 1px solid #2d4a6b;
+    color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .open-workspace-btn:hover { border-color: #3b82f6; color: #60a5fa; background: #1e3050; }
+
+  /* Co-pilot chat route cards */
+  .route-card.route-chat {
+    border: 1px solid #1e2d45;
+    border-left: 2px solid #0ea5e9;
+    cursor: pointer;
+  }
+  .route-card.route-chat:hover {
+    border-color: #0ea5e9;
+    background: #0f1e2e;
+  }
+  .rcard-cta {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; color: #0ea5e9;
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid #1e2d45;
+  }
+  .route-card.route-chat:hover .rcard-cta { color: #38bdf8; }
+
+  /* Chat panel flash on route activation */
+  .chat-panel.flash-active { animation: chat-flash 0.6s ease; }
+  @keyframes chat-flash {
+    0%   { box-shadow: inset 0 0 0 2px #0ea5e9; }
+    50%  { box-shadow: inset 0 0 0 2px #38bdf8; }
+    100% { box-shadow: none; }
+  }
+
+</style>
+</head>
+<body>
+<!-- Hidden file inputs — must be inside body -->
+<input type="file" id="boxing-file-input"   accept=".csv,.xlsx,.xls" style="display:none">
+<input type="file" id="matching-file-input" accept=".xlsx,.xls"      style="display:none">
+
+
+<!-- Welcome Overlay -->
+<div id="welcome-overlay">
+  <div class="wc-mark">CF</div>
+  <div class="wc-greeting">Good morning, <span id="wc-name">{{ session.get('username', 'there') | capitalize }}</span>.</div>
+  <div class="wc-tagline">
+    Your <em>Portfolio Co-Pilot</em> is ready. Type naturally or select a workflow —
+    the intent router handles classification automatically.
+  </div>
+  <div class="wc-badge">
+    <div class="wc-badge-dot"></div>
+    Signed in as &nbsp;<span class="wc-badge-role" id="wc-role">{{ session.get('persona_label', '') }}</span>
+  </div>
+  <div class="wc-grid">
+    <div class="wc-card" onclick="dismissWelcome(); showPage('boxing','nav-boxing')">
+      <div class="wc-card-tag">Route B &middot; Loan Boxing</div>
+      <div class="wc-card-name">Run Tape Analysis</div>
+      <div class="wc-card-desc">Upload a tape and apply FICO, LTV, DTI filters across 3 phases</div>
+    </div>
+    <div class="wc-card" onclick="dismissWelcome(); showPage('matching','nav-matching')">
+      <div class="wc-card-tag">Route A &middot; Matching Engine</div>
+      <div class="wc-card-name">Find Counterparties</div>
+      <div class="wc-card-desc">Rank buyer/seller CUs by LTD, activity, geography</div>
+    </div>
+    <div class="wc-card" onclick="dismissWelcome(); showPage('market','nav-market')">
+      <div class="wc-card-tag">Route E &middot; Market Data</div>
+      <div class="wc-card-name">NCUA Benchmark</div>
+      <div class="wc-card-desc">Compare LTD and WA rate vs TX peer group</div>
+    </div>
+    <div class="wc-card" onclick="dismissWelcome(); showPage('home','nav-home')">
+      <div class="wc-card-tag">Dashboard &middot; Overview</div>
+      <div class="wc-card-name">Portfolio Overview</div>
+      <div class="wc-card-desc">Stats, active routes, recent reports and session summary</div>
+    </div>
+  </div>
+  <button class="wc-skip" onclick="dismissWelcome()">Go straight to dashboard &rarr;</button>
+</div>
+
+
+
+
+
+<!-- ═══════════════ TOPBAR ═══════════════ -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">CF</div>
+    <div>
+      <div class="logo-text">Capital Flow AI</div>
+      <div class="logo-sub">Loan Participation Platform</div>
+    </div>
+  </div>
+  <div class="topbar-center">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search routes, CUs, reports…
+    <span style="font-size:10px;background:#2d4a6b;padding:1px 5px;border-radius:3px;margin-left:4px;">⌘K</span>
+  </div>
+  <div class="topbar-right">
+    <div class="status-pill">
+      <div class="dot-green"></div>
+      All systems live
+    </div>
+    <div class="persona-btn" onclick="showPersonaMenu()">
+      <div class="persona-avatar" id="topbar-avatar">{{ session.get('username', 'U')[0:2] | upper }}</div>
+      <div>
+        <div class="persona-name" id="topbar-user-name">{{ session.get('username', 'User') | capitalize }} Y.</div>
+        <div class="persona-role" id="topbar-user-role">{{ session.get('persona_label', 'Guest') }}</div>
+      </div>
+    </div>
+    <div onclick="sessionStorage.removeItem('cfai_welcome_shown'); window.location.href='/logout'" title="Sign out" style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;cursor:pointer;border:1px solid #2d4a6b;color:#64748b;font-size:11px;transition:all 0.15s;" onmouseover="this.style.borderColor='#f43f5e';this.style.color='#f43f5e'" onmouseout="this.style.borderColor='#2d4a6b';this.style.color='#64748b'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BODY ═══════════════ -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="nav-item active" id="nav-home" onclick="showPage('home','nav-home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <div class="nav-tooltip">Dashboard</div>
+    </div>
+    <div class="nav-item" id="nav-boxing" onclick="showPage('boxing','nav-boxing')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <div class="nav-tooltip">Loan Boxing</div>
+    </div>
+    <div class="nav-item" id="nav-matching" onclick="showPage('matching','nav-matching')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <div class="nav-tooltip">Matching Engine</div>
+    </div>
+    <div class="nav-item" id="nav-market" onclick="showPage('market','nav-market')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div class="nav-tooltip">Market Data</div>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-item" id="nav-reports" onclick="showPage('reports','nav-reports')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <div class="nav-tooltip">Reports</div>
+    </div>
+    <div class="nav-item" id="nav-settings" onclick="showPage('settings','nav-settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <div class="nav-tooltip">Settings</div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: DASHBOARD ═══ -->
+  <div class="page active" id="page-home">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Overview</div>
+        <div class="page-title">Portfolio Dashboard</div>
+        <div class="page-subtitle">Capital Flow AI · {{ session.get('persona_label', '') }} · Session active</div>
+      </div>
+
+      <!-- Dashboard KPIs — 2 Boxing + 2 Matching, balanced cross-workflow command centre -->
+      {% set s    = session.get('summary', {}) %}
+      {% set ms   = session.get('matching_summary', {}) %}
+      {% set tape = session.get('tape_size') %}
+      <div class="stats-row">
+
+        <!-- KPI 2 (Boxing): Eligible Pool · P1 — in_box_flag=True after box assignment -->
+        <div class="stat-card">
+          <div class="stat-label">Eligible Pool · P1</div>
+          <div class="stat-val" id="dash-stat-eligible">
+            {%- if s.get('matched_loans') -%}
+              {{ "{:,}".format(s.matched_loans) }}
+            {%- else -%}
+              <span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>
+            {%- endif -%}
+          </div>
+          <div class="stat-delta {% if s.get('match_pct') %}up{% else %}neu{% endif %}" id="dash-stat-eligible-sub">
+            {%- if s.get('match_pct') -%}
+              ▲ {{ "%.1f"|format(s.match_pct) }}% pass rate · Route B
+            {%- else -%}
+              Run Phase 1 · Route B
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- KPI 3 (Boxing): Participation Pool · P2 — post-user-filter refined loans -->
+        <div class="stat-card">
+          <div class="stat-label">Participation Pool · P2</div>
+          <div class="stat-val" id="dash-stat-pool">
+            {%- if s.get('refined_loans') -%}
+              {{ "{:,}".format(s.refined_loans) }}
+            {%- else -%}
+              <span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>
+            {%- endif -%}
+          </div>
+          <div class="stat-delta {% if s.get('refined_loans') %}up{% else %}neu{% endif %}" id="dash-stat-pool-sub">
+            {%- if s.get('refined_loans') and s.get('wa_rate') -%}
+              ▲ WA Rate {{ "%.2f"|format(s.wa_rate * 100 if s.wa_rate < 1 else s.wa_rate) }}% · Deal ready
+            {%- elif s.get('refined_loans') -%}
+              ▲ Phase 2 complete · Execution ready
+            {%- else -%}
+              Run Phase 2 · Route B
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- KPI 3 (Matching): LTD Position + Role — strategic self-positioning -->
+        <div class="stat-card">
+          <div class="stat-label">LTD Position · Route A</div>
+          <div class="stat-val" id="dash-stat-role">
+            {%- if ms.get('ltd') -%}
+              <span style="font-size:22px;">{{ "%.1f"|format(ms.ltd * 100) }}%</span>
+            {%- else -%}
+              <span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>
+            {%- endif -%}
+          </div>
+          <div class="stat-delta {% if ms.get('role') == 'BUYER' %}up{% elif ms.get('role') == 'SELLER' %}neu{% else %}neu{% endif %}" id="dash-stat-role-sub">
+            {%- if ms.get('role') -%}
+              {%- if ms.get('role') == 'BUYER' -%}
+                ▲ BUYER · Excess liquidity to deploy
+              {%- else -%}
+                ▲ SELLER · Positioned to offload
+              {%- endif -%}
+            {%- else -%}
+              Upload 5300 Call Report · Route A
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- KPI 4 (Matching): Top Counterparty — CU name leads, score follows -->
+        <div class="stat-card">
+          <div class="stat-label">Top Counterparty · Route A</div>
+          <div id="dash-stat-match">
+            {%- if ms.get('top_cu') -%}
+              <div style="font-size:13px;font-weight:700;color:#60a5fa;font-family:'DM Mono',monospace;
+                          letter-spacing:-0.2px;margin:4px 0 2px;line-height:1.2;">{{ ms.top_cu }}</div>
+              <div style="font-size:10px;color:var(--text-dim);">
+                Score <strong style="color:#e2e8f0;">{{ "%.0f"|format(ms.top_score) }}</strong>
+                &nbsp;·&nbsp;
+                {{ ms.get('candidate_count', 0) }} candidates ranked
+              </div>
+            {%- else -%}
+              <div style="font-size:18px;font-weight:400;color:var(--text-dim);margin:4px 0;">—</div>
+            {%- endif -%}
+          </div>
+          <div class="stat-delta {% if ms.get('top_cu') %}up stat-delta-top-cu{% else %}neu stat-delta-top-empty{% endif %}" id="dash-stat-match-sub">
+            {%- if ms.get('top_cu') -%}
+              ▲ Priority target · NCUA verified
+            {%- else -%}
+              Run matching engine · Route A
+            {%- endif -%}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tool Workflows -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div class="sec-label" style="margin-bottom:0">Tool Workflows</div>
+          <div style="height:1px;flex:1;background:var(--border-dim)"></div>
+          <div style="font-size:9px;color:var(--text-dim);font-weight:500;">Click to open dedicated workspace</div>
+        </div>
+        <div class="route-grid">
+
+          <div class="route-card live-a" onclick="showPage('boxing','nav-boxing')" style="cursor:pointer;">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#064e3b">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+              <div class="badge-row"><div class="badge badge-live">LIVE</div><div class="badge-chat-sm">CHAT</div></div>
+            </div>
+            <div class="rcard-name">Loan Boxing</div>
+            <div class="rcard-sub">Route B · 3-Phase Pipeline</div>
+            <div class="rcard-desc">Analyze tape, apply FICO/LTV/DTI filters, generate compliance-ready portfolio report.</div>
+            <div class="rcard-query">"Box loans FICO 680+, LTV ≤90%, DTI ≤43%"</div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:8px;gap:4px;font-size:9px;color:#10b981;font-weight:600;">Open Workspace <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+
+          <div class="route-card live-a" onclick="showPage('matching','nav-matching')" style="cursor:pointer;">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#1e3a8a">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </div>
+              <div class="badge-row"><div class="badge badge-live">LIVE</div><div class="badge-chat-sm">CHAT</div></div>
+            </div>
+            <div class="rcard-name">Counterparty Matching</div>
+            <div class="rcard-sub">Route A · Seller-Buyer Engine</div>
+            <div class="rcard-desc">Ranks buyer/seller CUs by LTD ratio, geographic proximity, and NCUA activity score.</div>
+            <div class="rcard-query">"Find buyers for my auto loan pool"</div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:8px;gap:4px;font-size:9px;color:#60a5fa;font-weight:600;">Open Workspace <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+
+          <div class="route-card live-a" onclick="showPage('market','nav-market')" style="cursor:pointer;">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#083344">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="badge-row"><div class="badge badge-live">LIVE</div><div class="badge-chat-sm">CHAT</div></div>
+            </div>
+            <div class="rcard-name">NCUA Market Data</div>
+            <div class="rcard-sub">Route E · Live Benchmarking</div>
+            <div class="rcard-desc">Peer LTD ratios, WA rates, asset size distribution benchmarked vs NCUA call reports.</div>
+            <div class="rcard-query">"Compare our LTD to TX peer CUs Q4"</div>
+            <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:8px;gap:4px;font-size:9px;color:#0ea5e9;font-weight:600;">Open Workspace <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Co-Pilot Routes -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div class="sec-label" style="margin-bottom:0">Co-Pilot Routes</div>
+          <div style="height:1px;flex:1;background:var(--border-dim)"></div>
+          <div style="font-size:9px;color:var(--text-dim);font-weight:500;">Click to activate in chat panel →</div>
+        </div>
+        <div class="route-grid">
+
+          <div class="route-card route-chat" onclick="activateChatRoute('DOCUMENT_QA','Route D · Document QA','Upload a 5300 or loan tape PDF using the 📎 paperclip, then ask any question — I answer strictly from document content.','WA rate on this tape? 60+ DPD count?')">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#2e1065">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="badge badge-chat">CHAT</div>
+            </div>
+            <div class="rcard-name">Document QA</div>
+            <div class="rcard-sub">Route D · PDF RAG</div>
+            <div class="rcard-desc">Upload 5300 or tape PDF — instant extraction and interrogation via in-context RAG.</div>
+            <div class="rcard-cta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ask in Co-Pilot →
+            </div>
+          </div>
+
+          <div class="route-card route-chat" onclick="activateChatRoute('KNOWLEDGE_BASE','Route C · Knowledge Base','NCUA 701.22 knowledge base active. Ask any question about participation rules, eligibility thresholds, or compliance methodology.','Min FICO for prime participation?')">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#451a03">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <div class="badge badge-chat">CHAT</div>
+            </div>
+            <div class="rcard-name">Knowledge Base</div>
+            <div class="rcard-sub">Route C · NCUA 701.22 RAG</div>
+            <div class="rcard-desc">Participation rules, eligibility thresholds, compliance methodology via semantic search.</div>
+            <div class="rcard-cta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ask in Co-Pilot →
+            </div>
+          </div>
+
+          <div class="route-card route-chat" onclick="activateChatRoute('GENERAL_ASSIST','Route F · General Co-Pilot','Director session active. Full platform access. Ask me anything about your portfolio, session summary, or any route.','Summarise this week\'s participation activity')">
+            <div class="rcard-top">
+              <div class="rcard-icon" style="background:#4c0519">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div class="badge badge-chat">CHAT</div>
+            </div>
+            <div class="rcard-name">General Co-Pilot</div>
+            <div class="rcard-sub">Route F · Conversational AI</div>
+            <div class="rcard-desc">Full session history, persona-aware responses, multi-turn context across all routes.</div>
+            <div class="rcard-cta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Ask in Co-Pilot →
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- V2 Roadmap -->
+      <div>
+        <div class="sec-label">V2 Roadmap</div>
+        <div class="route-grid">
+          <div class="route-card v2">
+            <div class="rcard-top"><div class="rcard-icon" style="background:#1e2d45"><svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="badge badge-v2">V2</div></div>
+            <div class="rcard-name">Pricing Engine</div><div class="rcard-sub">Route G · Fair Value Spreads</div>
+            <div class="rcard-desc">Model spread pricing for participation pools against benchmark curves.</div>
+            <div class="rcard-query">"Price this pool at spread + 45 bps"</div>
+          </div>
+          <div class="route-card v2">
+            <div class="rcard-top"><div class="rcard-icon" style="background:#1e2d45"><svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div><div class="badge badge-v2">V2</div></div>
+            <div class="rcard-name">Regulatory Alerts</div><div class="rcard-sub">Route H · NCUA/CFPB Monitor</div>
+            <div class="rcard-desc">Automated rule change detection with portfolio impact assessment.</div>
+            <div class="rcard-query">"Any new 701.22 amendments this quarter?"</div>
+          </div>
+          <div class="route-card v2">
+            <div class="rcard-top"><div class="rcard-icon" style="background:#1e2d45"><svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="badge badge-v2">V2</div></div>
+            <div class="rcard-name">CRM + Deal Workflow</div><div class="rcard-sub">Route I · Salesforce Integration</div>
+            <div class="rcard-desc">Automated deal staging, counterparty CRM sync, workflow triggers.</div>
+            <div class="rcard-query">"Log this match as a deal in Salesforce"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel">
+      <div class="chat-header">
+        <div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-all">All Routes</span></div><div class="chat-sub" id="home-chat-sub">All routes active · StageZeroRouter</div></div>
+        <div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div>
+      </div>
+      <div class="persona-strip">
+        <div class="p-strip-label">Persona</div>
+        <div class="p-strip-opts">
+          <div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div>
+          <div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div>
+          <div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div>
+          <div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div>
+          <div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div>
+          <div class="p-opt sel" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="home-chat-messages">
+        <div class="msg msg-bot" id="home-welcome-msg">
+          <!-- Dynamic welcome — rendered by Jinja2 on page load -->
+          {% set s  = session.get('summary', {}) %}
+          {% set un = session.get('username', 'User') | capitalize %}
+          {% set pl = session.get('persona_label', 'User') %}
+          <span class="msg-tag">▸ SYSTEM · StageZeroRouter</span>
+          Welcome back, <strong>{{ un }}</strong>.<br><br>
+          {%- set tape_vol = session.get('tape_size') or s.get('total_loans') -%}
+          {%- if tape_vol -%}
+          <strong>Session in progress.</strong> Your last tape had
+          <strong>{{ "{:,}".format(tape_vol) }}</strong> raw loans —
+          <strong>{{ "{:,}".format(s.get('matched_loans', 0)) }}</strong> eligible
+          ({{ "%.1f"|format(s.get('match_pct', 0)) }}% screening rate)
+          {%- if s.get('refined_loans') -%}
+          , <strong>{{ "{:,}".format(s.refined_loans) }}</strong> in your participation pool
+          {%- endif -%}
+          {%- if s.get('wa_rate') -%}
+          · Pool WA Rate <strong>{{ "%.2f"|format(s.wa_rate * 100 if s.wa_rate < 1 else s.wa_rate) }}%</strong>
+          {%- endif -%}
+          .<br><br>
+          {%- else -%}
+          You have <strong>6 active routes</strong> — loan tape boxing, counterparty matching, NCUA market benchmarking, document QA, knowledge base, and general co-pilot.<br><br>
+          To begin: upload a <strong>loan tape</strong> (CSV/Excel) for box assignment, or a <strong>5300 Call Report</strong> (Excel) for counterparty matching.
+          {%- endif -%}
+          <br><br>
+          <span style="font-size:9px;color:var(--text-dim);line-height:1.6;">
+            A · Matching &nbsp;·&nbsp; B · Loan Boxing &nbsp;·&nbsp; C · Knowledge Base &nbsp;·&nbsp; D · Doc QA &nbsp;·&nbsp; E · NCUA Data &nbsp;·&nbsp; F · General
+          </span>
+        </div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row">
+          <div class="chip">Phase 3 Report</div>
+          <div class="chip">Peer Benchmark</div>
+          <div class="chip">Find Buyers</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="file" id="home-chat-file" accept=".pdf,.xlsx,.xls,.csv,.txt,.docx" style="display:none" onchange="chatFileSelected(this,'home-chat-file')">
+          <button class="chat-attach" id="home-chat-file-btn" title="Attach file" onclick="document.getElementById('home-chat-file').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="home-chat-file-label"></span>
+            <input class="chat-input" placeholder="Ask the co-pilot anything…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: LOAN BOXING ═══ -->
+  <div class="page" id="page-boxing">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Route B</div>
+        <div class="page-title">Loan Boxing Pipeline</div>
+        <div class="page-subtitle">3-phase tape analysis · FICO / LTV / DTI filter engine · Compliance-ready output</div>
+      </div>
+
+      <!-- Stats -->
+      {% set s = session.get('summary', {}) %}
+      <div class="stats-row">
+
+        <div class="stat-card">
+          <div class="stat-label">Tape Volume</div>
+          <div class="stat-val" id="stat-total">
+            {%- set tv = session.get('tape_size') or s.get('total_loans') -%}
+            {{ "{:,}".format(tv) if tv else '—' }}
+          </div>
+          <div class="stat-delta neu" id="stat-total-sub">
+            {{ 'Loans ingested' if (session.get('tape_size') or s.get('total_loans')) else 'Upload a loan tape to begin' }}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Eligible Pool  ·  P1</div>
+          <div class="stat-val" id="stat-p1">{{ s.get('matched_loans', '—') }}</div>
+          <div class="stat-delta {% if s.get('match_pct') %}up{% else %}neu{% endif %}" id="stat-p1-sub">
+            {%- if s.get('match_pct') -%}▲ {{ "%.1f"|format(s.get('match_pct', 0)) }}% screening rate{%- else -%}Awaiting Phase 1{%- endif -%}
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Participation Pool  ·  P2</div>
+          <div class="stat-val" id="stat-p2">—</div>
+          <div class="stat-delta neu" id="stat-p2-sub">Awaiting Phase 2</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Pool WA Rate  ·  P2</div>
+          <div class="stat-val" id="stat-rate">{% if s.get('wa_rate') %}{{ "%.2f"|format(s.get('wa_rate', 0)) }}%{% else %}—{% endif %}</div>
+          <div class="stat-delta {% if s.get('wa_rate') %}up{% else %}neu{% endif %}" id="stat-rate-sub">
+            {%- if s.get('wa_rate') -%}Weighted avg coupon{%- else -%}Awaiting Phase 2{%- endif -%}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Upload + Pipeline side by side -->
+      <div class="two-col">
+
+        <!-- Upload -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">Phase 1 — Upload Loan Tape</div>
+            <div class="badge badge-live">ACTIVE</div>
+          </div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <!-- Phase 1 form — fetch intercept, blob download, then reload for fresh session stats -->
+            <form id="boxing-phase1-form" enctype="multipart/form-data">
+              <input type="hidden" name="action" value="analyze">
+              <div class="drop-zone" id="boxing-drop-zone" style="cursor:pointer;" onclick="document.getElementById('boxing-tape-input').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5" style="margin-bottom:8px"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                <div class="drop-zone-text" id="boxing-drop-label">Drop Loan Tape or click to browse</div>
+                <div class="drop-zone-sub">CSV or Excel (.xlsx) · Engine auto-detects columns · Standardises field names</div>
+                <input type="file" id="boxing-tape-input" name="loan_tape" accept=".csv,.xlsx,.xls" required
+                  style="display:none"
+                  onchange="document.getElementById('boxing-drop-label').textContent=this.files[0].name; document.getElementById('boxing-drop-zone').style.borderColor='#10b981';">
+              </div>
+              <div style="display:flex;gap:8px;margin-top:10px;">
+                <button type="button" class="btn btn-primary" style="flex:1;" onclick="runPhase1Analysis()">▶ Run Phase 1 Analysis</button>
+              </div>
+              <div id="phase1-status" style="display:none;font-size:10px;font-family:'DM Mono',monospace;padding:5px 0;"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- 3-Phase pipeline visual -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">3-Phase Pipeline</div>
+            <div style="font-size:9px;color:#64748b;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.5px;">Upload · Refine · Export</div>
+          </div>
+          <div class="panel-card-body">
+            <div class="phase-steps">
+
+              <!-- Phase 1 — Upload & Screen -->
+              <div class="phase-step">
+                <div class="phase-num" style="background:#1e2d45;color:#64748b;font-size:11px;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+                <div class="phase-info" style="width:100%">
+                  <div style="margin-bottom:6px;">
+                    <div class="phase-info-title">Phase 1 — Screen the Tape</div>
+                    <div style="font-size:10px;color:#64748b;margin-top:2px;">Upload your raw loan file. The engine standardises all fields and applies institution-grade eligibility filters automatically — no manual setup needed.</div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;">
+                    <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:4px;padding:5px 8px;">
+                      <div style="font-size:8px;color:#475569;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;">Min Credit Score</div>
+                      <div style="font-size:13px;font-weight:700;color:#e2e8f0;font-family:'DM Mono',monospace;">≥ 660 FICO</div>
+                    </div>
+                    <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:4px;padding:5px 8px;">
+                      <div style="font-size:8px;color:#475569;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;">Max Loan-to-Value</div>
+                      <div style="font-size:13px;font-weight:700;color:#e2e8f0;font-family:'DM Mono',monospace;">≤ 115%</div>
+                    </div>
+                    <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:4px;padding:5px 8px;">
+                      <div style="font-size:8px;color:#475569;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;">Max Debt-to-Income</div>
+                      <div style="font-size:13px;font-weight:700;color:#e2e8f0;font-family:'DM Mono',monospace;">≤ 45%</div>
+                    </div>
+                    <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:4px;padding:5px 8px;">
+                      <div style="font-size:8px;color:#475569;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;">Delinquency Limit</div>
+                      <div style="font-size:13px;font-weight:700;color:#e2e8f0;font-family:'DM Mono',monospace;">&lt; 30 days</div>
+                    </div>
+                  </div>
+                  <div style="font-size:10px;color:#475569;font-style:italic;">Output: Full box assignment CSV — all qualifying loans ranked and ready for review.</div>
+                </div>
+              </div>
+
+              <!-- Connector -->
+              <div style="display:flex;align-items:center;gap:8px;padding:2px 0 2px 14px;">
+                <div style="width:1px;height:16px;background:#1e2d45;"></div>
+              </div>
+
+              <!-- Phase 2 — Refine -->
+              <div class="phase-step">
+                <div class="phase-num" style="background:#1e2d45;color:#64748b;font-size:11px;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+                <div class="phase-info" style="width:100%">
+                  <div style="margin-bottom:6px;">
+                    <div class="phase-info-title">Phase 2 — Refine the Portfolio</div>
+                    <div style="font-size:10px;color:#64748b;margin-top:2px;">Apply your institution's specific criteria using the filter controls on the left. Narrow by credit score range, LTV, interest rate band, loan type, and more. The refined pool becomes your participation-ready portfolio.</div>
+                  </div>
+                  <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:4px;padding:8px 10px;">
+                    <div style="font-size:8px;color:#475569;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Configurable via filter controls ↙</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">Credit Score Band</span>
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">LTV Range</span>
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">Interest Rate</span>
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">DTI Threshold</span>
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">Loan Type</span>
+                      <span style="font-size:9px;background:#1e2d45;color:#94a3b8;padding:2px 7px;border-radius:3px;">Delinquency</span>
+                    </div>
+                  </div>
+                  <div style="font-size:10px;color:#475569;font-style:italic;margin-top:5px;">Output: Refined CSV — your curated participation pool.</div>
+                </div>
+              </div>
+
+              <!-- Connector -->
+              <div style="display:flex;align-items:center;gap:8px;padding:2px 0 2px 14px;">
+                <div style="width:1px;height:16px;background:#1e2d45;"></div>
+              </div>
+
+              <!-- Phase 3 — Export -->
+              <div class="phase-step" style="border-color:#1e3a8a;background:#1e3a8a10;">
+                <div class="phase-num" style="background:#1e3a8a;color:#60a5fa;font-size:11px;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+                <div class="phase-info" style="width:100%">
+                  <div style="margin-bottom:6px;">
+                    <div class="phase-info-title">Phase 3 — Generate Portfolio Report</div>
+                    <div style="font-size:10px;color:#64748b;margin-top:2px;">Produce a board-ready portfolio report covering yield analysis, loan box distribution, and NCUA 701.22 eligibility compliance — ready for counterparty sharing or executive review.</div>
+                  </div>
+                  <div style="display:flex;gap:7px;margin-top:4px;">
+                    <button class="btn btn-primary" style="font-size:10px;padding:6px 12px;">▶ Generate Report</button>
+                    <button class="btn btn-emerald" style="font-size:10px;padding:6px 12px;">⬇ Download Refined CSV</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 Refinement Controls + Distribution -->
+      <div class="two-col">
+
+        <!-- Filter Controls — wrapped in a real form -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">Phase 2 — Refine Portfolio</div>
+            <div style="font-size:9px;color:#64748b;font-family:'DM Mono',monospace;">Set filters · Run analysis · Download refined CSV</div>
+          </div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <form id="boxing-phase2-form" action="/ltn-analyze" method="POST" enctype="multipart/form-data" target="_blank">
+              <input type="hidden" name="action" value="refine">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+
+                <!-- Product Type -->
+                <div class="filter-row" style="grid-template-columns:1fr;">
+                  <div class="filter-field">
+                    <label>Product Type</label>
+                    <select id="p2-product" name="product">
+                      <option value="AUTO_NEW">Auto — New</option>
+                      <option value="AUTO_USED">Auto — Used</option>
+                      <option value="AUTO_ALL" selected>Auto — All</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- FICO Range -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>FICO Min</label>
+                    <input type="number" id="p2-fico-min" name="fico_min" value="" min="0" max="900" placeholder="0"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>FICO Max</label>
+                    <input type="number" id="p2-fico-max" name="fico_max" value="" min="0" max="900" placeholder="900"/>
+                  </div>
+                </div>
+
+                <!-- LTV -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>LTV Min %</label>
+                    <input type="number" id="p2-ltv-min" name="ltv_min" value="0" min="0" max="120" step="0.5"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>LTV Max %</label>
+                    <input type="number" id="p2-ltv-max" name="ltv_max" value="120" min="0" max="120" step="0.5"/>
+                  </div>
+                </div>
+
+                <!-- DTI -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>DTI Min %</label>
+                    <input type="number" id="p2-dti-min" name="dti_min" value="0" min="0" max="55" step="0.1"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>DTI Max %</label>
+                    <input type="number" id="p2-dti-max" name="dti_max" value="55" min="0" max="55" step="0.1"/>
+                  </div>
+                </div>
+
+                <!-- Term -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>Term Min (mo)</label>
+                    <input type="number" id="p2-term-min" name="term_min" value="6" min="6" max="96" step="1"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>Term Max (mo)</label>
+                    <input type="number" id="p2-term-max" name="term_max" value="96" min="6" max="96" step="1"/>
+                  </div>
+                </div>
+
+                <!-- Balance -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>Balance Min ($)</label>
+                    <input type="number" id="p2-bal-min" name="balance_min" value="0" min="0" max="150000" step="1000"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>Balance Max ($)</label>
+                    <input type="number" id="p2-bal-max" name="balance_max" value="150000" min="0" max="150000" step="1000"/>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;margin-top:-4px;">
+                  <input type="checkbox" id="p2-zero-bal" name="remove_zero_balance" checked style="width:14px;height:14px;accent-color:#f97316;cursor:pointer;">
+                  <label for="p2-zero-bal" style="font-size:10px;color:#f97316;cursor:pointer;font-weight:500;">Exclude $0 balance loans</label>
+                </div>
+
+                <!-- Interest Rate -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>Rate Min %</label>
+                    <input type="number" id="p2-rate-min" name="interest_rate_min" value="0" min="0" max="25" step="0.01"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>Rate Max %</label>
+                    <input type="number" id="p2-rate-max" name="interest_rate_max" value="25" min="0" max="25" step="0.01"/>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;margin-top:-4px;">
+                  <input type="checkbox" id="p2-zero-rate" name="remove_zero_rate" checked style="width:14px;height:14px;accent-color:#f97316;cursor:pointer;">
+                  <label for="p2-zero-rate" style="font-size:10px;color:#f97316;cursor:pointer;font-weight:500;">Exclude 0% rate loans</label>
+                </div>
+
+                <!-- Days Past Due -->
+                <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+                  <div class="filter-field">
+                    <label>DPD Min</label>
+                    <input type="number" id="p2-dpd-min" name="days_past_due_min" value="0" min="0" max="180" step="1"/>
+                  </div>
+                  <div class="filter-field">
+                    <label>DPD Max</label>
+                    <input type="number" id="p2-dpd-max" name="days_past_due_max" value="180" min="0" max="180" step="1"/>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;margin-top:-4px;">
+                  <input type="checkbox" id="p2-dq30" name="exclude_over_30_dq" checked style="width:14px;height:14px;accent-color:#f97316;cursor:pointer;">
+                  <label for="p2-dq30" style="font-size:10px;color:#f97316;cursor:pointer;font-weight:500;">Exclude &gt;30 days delinquent loans</label>
+                </div>
+
+                <!-- Maturity -->
+                <div style="display:flex;flex-direction:column;gap:5px;padding:8px 10px;background:#0d1a2e;border:1px solid #1e2d45;border-radius:5px;">
+                  <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:2px;">Maturity Criteria</div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <input type="checkbox" id="p2-matured" name="remove_matured" checked style="width:14px;height:14px;accent-color:#f97316;cursor:pointer;">
+                    <label for="p2-matured" style="font-size:10px;color:#f97316;cursor:pointer;font-weight:500;">Exclude matured loans</label>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <input type="checkbox" id="p2-term3" name="min_remaining_term" checked style="width:14px;height:14px;accent-color:#f97316;cursor:pointer;">
+                    <label for="p2-term3" style="font-size:10px;color:#f97316;cursor:pointer;font-weight:500;">Exclude loans with &lt;3 months remaining</label>
+                  </div>
+                </div>
+
+                <!-- WA Rate Target Band (reference only) -->
+                <div style="padding:8px 10px;background:#0d1a2e;border:1px solid #1e2d45;border-radius:5px;">
+                  <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:6px;">WA Rate Target Band <span style="color:#64748b;font-weight:400;text-transform:none;letter-spacing:0;">(reference only — not a filter)</span></div>
+                  <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;">
+                    <input type="number" name="wa_rate_target_min" value="5.0" min="0" max="30" step="0.1" style="background:#162236;border:1px solid #2d4060;border-radius:4px;padding:6px 8px;color:#e2e8f0;font-size:12px;outline:none;"/>
+                    <span style="font-size:11px;color:#475569;">%  –</span>
+                    <input type="number" name="wa_rate_target_max" value="15.0" min="0" max="30" step="0.1" style="background:#162236;border:1px solid #2d4060;border-radius:4px;padding:6px 8px;color:#e2e8f0;font-size:12px;outline:none;"/>
+                  </div>
+                  <div style="font-size:9px;color:#475569;font-style:italic;margin-top:4px;">Highlights if final WA Rate falls inside/outside target band</div>
+                </div>
+
+                <div style="display:flex;gap:8px;margin-top:4px;">
+                  <button type="submit" class="btn btn-primary" style="flex:1;">▶ Run Phase 2 Analysis</button>
+                  <button type="button" class="btn btn-ghost" onclick="resetPhase2Filters()">Reset Defaults</button>
+                </div>
+
+                <div id="phase2-status" style="display:none;font-size:10px;color:#10b981;font-family:'DM Mono',monospace;padding:4px 0;"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Pool Distribution — results panel, updated after Phase 2 runs -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">Phase 2 — Portfolio Snapshot</div>
+            <div style="font-size:9px;color:#64748b;font-style:italic;">Updates after running Phase 2 analysis</div>
+          </div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:14px;" id="phase2-distribution">
+
+            <!-- Awaiting state — shown before Phase 2 runs -->
+            <div id="p2-awaiting" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px 0;text-align:center;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#334d6e" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <div style="font-size:12px;color:#475569;">Set your filters and run Phase 2 to see the refined portfolio breakdown — loan counts by credit score band and LTV range.</div>
+            </div>
+
+            <!-- Results — populated after Phase 2 runs via JS -->
+            <div id="p2-results" style="display:none;flex-direction:column;gap:14px;">
+              <div>
+                <div style="font-size:10px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">By Credit Score Band</div>
+                <div class="mini-bar-row" id="bar-fico-1"><div class="mini-bar-label">720–739</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-fico-1" style="width:52%;background:#1d4ed8;"></div></div><div class="mini-bar-val" id="val-fico-1">97 loans</div></div>
+                <div class="mini-bar-row" id="bar-fico-2"><div class="mini-bar-label">740–759</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-fico-2" style="width:38%;background:#0ea5e9;"></div></div><div class="mini-bar-val" id="val-fico-2">71 loans</div></div>
+                <div class="mini-bar-row" id="bar-fico-3"><div class="mini-bar-label">760–779</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-fico-3" style="width:10%;background:#10b981;"></div></div><div class="mini-bar-val" id="val-fico-3">19 loans</div></div>
+                <div class="mini-bar-row" id="bar-fico-4"><div class="mini-bar-label">780+</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-fico-4" style="width:0%;background:#10b981;"></div></div><div class="mini-bar-val" id="val-fico-4" style="color:#64748b">0 loans</div></div>
+              </div>
+              <div>
+                <div style="font-size:10px;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;">By LTV Band</div>
+                <div class="mini-bar-row"><div class="mini-bar-label">≤ 70%</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-ltv-1" style="width:28%;background:#10b981;"></div></div><div class="mini-bar-val" id="val-ltv-1">52 loans</div></div>
+                <div class="mini-bar-row"><div class="mini-bar-label">71–80%</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-ltv-2" style="width:55%;background:#0ea5e9;"></div></div><div class="mini-bar-val" id="val-ltv-2">103 loans</div></div>
+                <div class="mini-bar-row"><div class="mini-bar-label">81–85%</div><div class="mini-bar-track"><div class="mini-bar-fill" id="fill-ltv-3" style="width:17%;background:#1d4ed8;"></div></div><div class="mini-bar-val" id="val-ltv-3">32 loans</div></div>
+              </div>
+              <div id="p2-summary-row" style="background:#0a1f12;border:1px solid #10b981;border-radius:5px;padding:8px 12px;display:none;">
+                <div style="font-size:10px;color:#10b981;font-weight:600;" id="p2-summary-text">Refined pool ready</div>
+                <a id="p2-download-link" href="#" target="_blank" style="font-size:10px;color:#6ee7b7;display:block;margin-top:3px;">⬇ Download Refined CSV</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 trigger bar -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div class="panel-card-title">Phase 3 — Portfolio Report</div>
+          <div style="font-size:9px;color:#475569;font-family:'DM Mono',monospace;">Available after Phase 2 completes</div>
+        </div>
+        <div class="panel-card-body">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <div style="font-size:11px;color:#64748b;flex:1;">Generate a board-ready PDF covering yield analysis, loan box distribution, and NCUA 701.22 eligibility — ready for counterparty sharing or executive review.</div>
+            <div style="display:flex;gap:8px;flex-shrink:0;">
+              <button class="btn btn-primary" id="phase3-report-btn" onclick="runPhase3Report()">▶ Generate Portfolio Report</button>
+              <button class="btn btn-emerald" id="phase3-csv-btn" onclick="downloadPhase2CSV()">⬇ Refined CSV</button>
+            </div>
+          </div>
+          <div id="phase3-status" style="display:none;font-size:10px;font-family:'DM Mono',monospace;margin-top:8px;color:#60a5fa;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel" id="boxing-chat-panel">
+      <div class="chat-header"><div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-boxing">Loan Boxing</span></div><div class="chat-sub">Loan Boxing context · All routes accepted</div></div><div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div></div>
+      <div class="persona-strip"><div class="p-strip-label">Persona</div><div class="p-strip-opts"><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div><div class="p-opt sel" id="di-opt-strip" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div></div></div>
+      <div class="chat-messages" id="boxing-chat-messages">
+        <div class="msg msg-bot">
+          {% set s = session.get('summary', {}) %}
+          <span class="msg-tag">▸ LOAN_BOXING · Co-Pilot</span>
+          {%- set tape_vol = session.get('tape_size') or s.get('total_loans') -%}
+          {%- if tape_vol -%}
+          Session active. Last tape: <strong>{{ "{:,}".format(tape_vol) }}</strong> loans ingested,
+          <strong>{{ "{:,}".format(s.get('matched_loans', 0)) }}</strong> eligible
+          ({{ "%.1f"|format(s.get('match_pct', 0)) }}% match rate).
+          {%- if s.get('refined_loans') -%}
+          &nbsp;Phase 2 refined to <strong>{{ "{:,}".format(s.refined_loans) }}</strong> loans.
+          {%- endif -%}
+          <br><br>Upload a new tape or ask about the current session.
+          {%- else -%}
+          Upload a <strong>loan tape</strong> (CSV or Excel) using the 📎 attach button to begin the 3-phase pipeline — screen, refine, and export your participation-ready portfolio.
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row"><div class="chip">Exclude 30+ DPD</div><div class="chip">Yield Summary</div><div class="chip">Find Buyers</div></div>
+                <div class="chat-input-row">
+          <input type="file" id="boxing-chat-file" accept=".csv,.xlsx,.xls" style="display:none" onchange="chatFileSelected(this, 'boxing-chat-file')">
+          <button class="chat-attach" id="boxing-chat-file-btn" title="Attach file" onclick="document.getElementById('boxing-chat-file').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="boxing-chat-file-label"></span>
+            <input class="chat-input" placeholder="Adjust filters or ask about the tape…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: MATCHING ENGINE ═══ -->
+  <div class="page" id="page-matching">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Route A</div>
+        <div class="page-title">Counterparty Matching Engine</div>
+        <div class="page-subtitle">ETL pipeline · LTD classification · Activity scoring · Geographic proximity ranking</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">CU LTD Ratio</div><div class="stat-val">70.2%</div><div class="stat-delta up">▲ SELLER signal</div></div>
+        <div class="stat-card"><div class="stat-label">Buyer Pool</div><div class="stat-val">14</div><div class="stat-delta neu">NCUA verified · TX</div></div>
+        <div class="stat-card"><div class="stat-label">Top Match Score</div><div class="stat-val">94.1</div><div class="stat-delta up">▲ CU_ACU #1</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Capacity Gap</div><div class="stat-val">$4.2M</div><div class="stat-delta neu">Available to deploy</div></div>
+      </div>
+
+      <!-- Upload + Config -->
+      <div class="two-col">
+
+        <!-- Upload -->
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">Step 1 — Upload 5300 Call Report</div>
+            <div class="badge badge-live">ACTIVE</div>
+          </div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="drop-zone" id="matching-drop-zone" style="padding:20px;cursor:pointer;" onclick="openFilePicker('matching-file-input')">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5" style="margin-bottom:8px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+              <div class="drop-zone-text">Drop NCUA 5300 Call Report</div>
+              <div class="drop-zone-sub">Excel (.xlsx) — ETL extracts 15 account codes automatically</div>
+            </div>
+            <!-- ETL extraction preview -->
+            <div style="background:#162236;border:1px solid #1e2d45;border-radius:6px;padding:10px 12px;">
+              <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:600;">ETL extracts these account codes</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Total Loans</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">025B</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Total Deposits</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">018</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Total Assets</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">010</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Indirect Loans</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">618A</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Part. Purchased</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">690</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#1e2d45;border-radius:3px;">
+                  <span style="font-size:9px;color:#94a3b8">Part. Sold YTD</span>
+                  <span style="font-size:9px;color:#60a5fa;font-family:'DM Mono',monospace">691</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" style="flex:1;" id="matching-run-btn" onclick="runMatchingUpload()">▶ Run Matching Engine</button>
+              <button class="btn btn-ghost" onclick="openFilePicker('matching-file-input')">Sample Data</button>
+            </div>
+            <div id="matching-status" style="font-size:11px;color:#64748b;font-family:'DM Mono',monospace;display:none;padding:6px 0;"></div>
+            <div id="matching-result" style="font-size:11px;display:none;"></div>
+          </div>
+        </div>
+
+        <!-- Scoring methodology -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">Step 2 — Scoring Methodology</div></div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:10px;">
+
+            <div style="background:#0d1a2e;border:1px solid #1e2d45;border-radius:6px;padding:12px;">
+              <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;font-weight:600;">Scoring Factors &amp; Weights</div>
+              <div style="display:flex;flex-direction:column;gap:7px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                    <span style="font-size:11px;color:#94a3b8;">LTD Gap Score</span>
+                    <span style="font-size:10px;color:#10b981;font-family:'DM Mono',monospace;font-weight:600;">40%</span>
+                  </div>
+                  <div style="height:4px;background:#1e2d45;border-radius:2px;overflow:hidden;"><div style="width:40%;height:100%;background:#10b981;border-radius:2px;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                    <span style="font-size:11px;color:#94a3b8;">Activity Score (YTD)</span>
+                    <span style="font-size:10px;color:#0ea5e9;font-family:'DM Mono',monospace;font-weight:600;">30%</span>
+                  </div>
+                  <div style="height:4px;background:#1e2d45;border-radius:2px;overflow:hidden;"><div style="width:30%;height:100%;background:#0ea5e9;border-radius:2px;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                    <span style="font-size:11px;color:#94a3b8;">Geographic Proximity</span>
+                    <span style="font-size:10px;color:#8b5cf6;font-family:'DM Mono',monospace;font-weight:600;">20%</span>
+                  </div>
+                  <div style="height:4px;background:#1e2d45;border-radius:2px;overflow:hidden;"><div style="width:20%;height:100%;background:#8b5cf6;border-radius:2px;"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                    <span style="font-size:11px;color:#94a3b8;">Capacity &amp; Asset Fit</span>
+                    <span style="font-size:10px;color:#f59e0b;font-family:'DM Mono',monospace;font-weight:600;">10%</span>
+                  </div>
+                  <div style="height:4px;background:#1e2d45;border-radius:2px;overflow:hidden;"><div style="width:10%;height:100%;background:#f59e0b;border-radius:2px;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Config -->
+            <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin-top:2px;">Match Configuration</div>
+            <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+              <div class="filter-field"><label>CU Role</label><select><option>Seller (LTD High)</option><option>Buyer (LTD Low)</option></select></div>
+              <div class="filter-field"><label>Geography</label><select><option>Same State (TX)</option><option>Regional</option><option>National</option></select></div>
+            </div>
+            <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+              <div class="filter-field"><label>LTD Threshold %</label><input type="number" value="70" /></div>
+              <div class="filter-field"><label>Min Asset Size</label><select><option>$50M+</option><option>$100M+</option><option>$500M+</option></select></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results table -->
+      <div class="panel-card">
+        <div class="panel-card-header">
+          <div class="panel-card-title">Step 3 — Ranked Counterparties · CU_CAPROCK_001</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:10px;color:#64748b">14 candidates · TX · NCUA verified</span>
+            <span class="badge badge-live">RANKED</span>
+          </div>
+        </div>
+        <div class="panel-card-body" style="display:flex;flex-direction:column;gap:0;">
+
+          <!-- Table header -->
+          <div style="display:grid;grid-template-columns:44px 1fr 90px 80px 80px 90px 80px;gap:0;padding:7px 12px;background:#162236;border-radius:5px 5px 0 0;border-bottom:1px solid #1e2d45;">
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600">Rank</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600">Credit Union</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;text-align:right">LTD</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;text-align:right">Assets</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;text-align:center">State</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;text-align:center">Activity</div>
+            <div style="font-size:9px;color:#475569;text-transform:uppercase;letter-spacing:0.6px;font-weight:600;text-align:right">Score</div>
+          </div>
+
+          <!-- Row 1 -->
+          <div style="display:grid;grid-template-columns:44px 1fr 90px 80px 80px 90px 80px;gap:0;padding:10px 12px;border-bottom:1px solid #1e2d452a;transition:background 0.12s;cursor:pointer;" onmouseover="this.style.background='#1e2d45'" onmouseout="this.style.background=''">
+            <div><div class="match-rank rank-1">#1</div></div>
+            <div><div style="font-size:12px;font-weight:600;color:#e2e8f0">CU_ACU — Austin Credit Union</div><div style="font-size:10px;color:#64748b;margin-top:2px">NCUA chartered · Indirect auto specialist</div></div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:#10b981;align-self:center">48.3%</div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;align-self:center">$312M</div>
+            <div style="text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:#94a3b8;align-self:center">TX</div>
+            <div style="text-align:center;align-self:center"><span style="font-size:9px;background:#064e3b;color:#10b981;padding:2px 8px;border-radius:3px;font-weight:700">HIGH</span></div>
+            <div style="text-align:right;font-size:20px;font-weight:700;color:#10b981;font-family:'DM Mono',monospace;align-self:center">94.1</div>
+          </div>
+
+          <!-- Row 2 -->
+          <div style="display:grid;grid-template-columns:44px 1fr 90px 80px 80px 90px 80px;gap:0;padding:10px 12px;border-bottom:1px solid #1e2d452a;cursor:pointer;" onmouseover="this.style.background='#1e2d45'" onmouseout="this.style.background=''">
+            <div><div class="match-rank rank-2">#2</div></div>
+            <div><div style="font-size:12px;font-weight:600;color:#e2e8f0">CU_TEXENS — Texas Ensign FCU</div><div style="font-size:10px;color:#64748b;margin-top:2px">NCUA chartered · Consumer &amp; auto portfolio</div></div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:#0ea5e9;align-self:center">52.1%</div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;align-self:center">$189M</div>
+            <div style="text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:#94a3b8;align-self:center">TX</div>
+            <div style="text-align:center;align-self:center"><span style="font-size:9px;background:#1e3a8a;color:#60a5fa;padding:2px 8px;border-radius:3px;font-weight:700">MED</span></div>
+            <div style="text-align:right;font-size:20px;font-weight:700;color:#94a3b8;font-family:'DM Mono',monospace;align-self:center">87.4</div>
+          </div>
+
+          <!-- Row 3 -->
+          <div style="display:grid;grid-template-columns:44px 1fr 90px 80px 80px 90px 80px;gap:0;padding:10px 12px;border-bottom:1px solid #1e2d452a;cursor:pointer;" onmouseover="this.style.background='#1e2d45'" onmouseout="this.style.background=''">
+            <div><div class="match-rank rank-3">#3</div></div>
+            <div><div style="font-size:12px;font-weight:600;color:#e2e8f0">CU_DALLFC — Dallas Financial CU</div><div style="font-size:10px;color:#64748b;margin-top:2px">NCUA chartered · Mixed loan portfolio</div></div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:#64748b;align-self:center">61.0%</div>
+            <div style="text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:#94a3b8;align-self:center">$445M</div>
+            <div style="text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:#94a3b8;align-self:center">TX</div>
+            <div style="text-align:center;align-self:center"><span style="font-size:9px;background:#1e2d45;color:#64748b;padding:2px 8px;border-radius:3px;font-weight:700;border:1px solid #2d4a6b">LOW</span></div>
+            <div style="text-align:right;font-size:20px;font-weight:700;color:#64748b;font-family:'DM Mono',monospace;align-self:center">79.8</div>
+          </div>
+
+          <!-- Collapsed rows hint -->
+          <div style="padding:9px 12px;text-align:center;cursor:pointer;color:#64748b;font-size:11px;border-top:1px solid #1e2d45;" onmouseover="this.style.color='#94a3b8'" onmouseout="this.style.color='#64748b'">
+            + 11 more candidates — click to expand or download full report
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-emerald">⬇ Download Full Match Report PDF</button>
+        <button class="btn btn-ghost">View All 14 Candidates</button>
+        <div style="margin-left:auto;font-size:11px;color:#64748b;">Run status: <span style="color:#10b981;font-weight:600;">Complete</span> · 14 CUs ranked · CU_CAPROCK_001 → SELLER</div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel">
+      <div class="chat-header"><div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-matching">Matching Engine</span></div><div class="chat-sub">Matching context · All routes accepted</div></div><div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div></div>
+      <div class="persona-strip"><div class="p-strip-label">Persona</div><div class="p-strip-opts"><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div><div class="p-opt sel" id="di-opt-strip" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div></div></div>
+      <div class="chat-messages">
+        <div class="msg msg-bot">
+          <span class="msg-tag">▸ MATCHING_ENGINE · Co-Pilot</span>
+          Upload a <strong>5300 Call Report</strong> (Excel) using the 📎 attach button to classify your institution's LTD position, score counterparties, and generate a ranked participation match report.
+          <br><br>
+          <span style="font-size:10px;color:var(--text-dim);">
+            LTD classification · Activity scoring · Geographic refinement · Capacity matching · PDF report
+          </span>
+        </div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row"><div class="chip">Top 5 Buyers</div><div class="chip">Expand to Regional</div><div class="chip">Run Tape Boxing</div></div>
+        <div class="chat-input-row">
+          <input type="file" id="matching-chat-file" accept=".xlsx,.xls,.pdf" style="display:none" onchange="chatFileSelected(this,'matching-chat-file')">
+          <button class="chat-attach" id="matching-chat-file-btn" title="Attach 5300 Call Report" onclick="document.getElementById('matching-chat-file').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="matching-chat-file-label"></span>
+            <input class="chat-input" placeholder="Filter by state, LTD, asset size…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: MARKET DATA ═══ -->
+  <div class="page" id="page-market">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Route E</div>
+        <div class="page-title">NCUA Market Data &amp; Benchmarking</div>
+        <div class="page-subtitle">Live peer comparison · LTD ratios · WA rates · Asset distribution · Q4 2025 Call Reports</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Your LTD</div><div class="stat-val">70.2%</div><div class="stat-delta dn">▼ Above peer median 63.1%</div></div>
+        <div class="stat-card"><div class="stat-label">Peer Median LTD</div><div class="stat-val">63.1%</div><div class="stat-delta neu">TX CUs · $100M–$500M</div></div>
+        <div class="stat-card"><div class="stat-label">Industry WA Rate</div><div class="stat-val">6.72%</div><div class="stat-delta up">▲ Used vehicle loans</div></div>
+        <div class="stat-card"><div class="stat-label">Your WA Rate</div><div class="stat-val">6.84%</div><div class="stat-delta up">▲ +12 bps vs industry</div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- LTD Comparison -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">LTD Ratio — Peer Comparison (TX CUs)</div></div>
+          <div class="panel-card-body">
+            <div class="comp-row">
+              <div class="comp-cu highlight">CU_CAPROCK (You)</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#0ea5e9;"></div></div></div>
+              <div class="comp-val" style="color:#0ea5e9">70.2%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">CU_ACU</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:69%;background:#1d4ed8;"></div></div></div>
+              <div class="comp-val">48.3%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">CU_TEXENS</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:74%;background:#1d4ed8;"></div></div></div>
+              <div class="comp-val">52.1%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">CU_DALLFC</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:87%;background:#475569;"></div></div></div>
+              <div class="comp-val">61.0%</div>
+            </div>
+            <div class="comp-row" style="border-bottom:none;">
+              <div class="comp-cu" style="color:#64748b;font-style:italic">Peer Median</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:90%;background:#374151;"></div></div></div>
+              <div class="comp-val" style="color:#64748b">63.1%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WA Rate bars -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">WA Rate by Loan Type — Industry vs You</div></div>
+          <div class="panel-card-body">
+            <div class="comp-row">
+              <div class="comp-cu">Used Vehicle (Your)</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#10b981;"></div></div></div>
+              <div class="comp-val" style="color:#10b981">6.84%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">Used Vehicle (Ind.)</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:98%;background:#1d4ed8;"></div></div></div>
+              <div class="comp-val">6.72%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">New Vehicle (Ind.)</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:77%;background:#475569;"></div></div></div>
+              <div class="comp-val">5.31%</div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-cu">Personal Loans</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:88%;background:#475569;"></div></div></div>
+              <div class="comp-val">11.2%</div>
+            </div>
+            <div class="comp-row" style="border-bottom:none;">
+              <div class="comp-cu">Home Equity</div>
+              <div class="comp-bar-wrap"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:60%;background:#374151;"></div></div></div>
+              <div class="comp-val">7.85%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Query panel -->
+      <div class="panel-card">
+        <div class="panel-card-header"><div class="panel-card-title">NCUA Data Query</div><span class="badge badge-live">Live — Q4 2025</span></div>
+        <div class="panel-card-body" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="filter-row">
+            <div class="filter-field"><label>State</label><select><option>Texas (TX)</option><option>California (CA)</option><option>Florida (FL)</option><option>All States</option></select></div>
+            <div class="filter-field"><label>Asset Range</label><select><option>$100M–$500M</option><option>$50M–$100M</option><option>$500M+</option></select></div>
+            <div class="filter-field"><label>Metric</label><select><option>LTD Ratio</option><option>WA Rate</option><option>Delinquency</option></select></div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary">▶ Run Benchmark</button>
+            <button class="btn btn-ghost">Export Table</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel">
+      <div class="chat-header"><div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-market">Market Data</span></div><div class="chat-sub">Market Data context · All routes accepted</div></div><div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div></div>
+      <div class="persona-strip"><div class="p-strip-label">Persona</div><div class="p-strip-opts"><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div><div class="p-opt sel" id="di-opt-strip" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div></div></div>
+      <div class="chat-messages">
+        <div class="msg msg-bot">
+          <span class="msg-tag">▸ MARKET_DATA · Route E</span>
+          Ask for live NCUA peer benchmarks — LTD positioning, net worth ratios, asset size comparisons against federally insured credit unions nationwide.<br><br>
+          <span style="font-size:10px;color:var(--text-dim);">
+            Try: "How does our LTD compare to Texas peers?" · "What's the industry average net worth ratio?"
+          </span>
+        </div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row"><div class="chip">Q3 vs Q4 trend</div><div class="chip">WA Rate Peers</div><div class="chip">Delinquency</div></div>
+        <div class="chat-input-row">
+          <input type="file" id="market-chat-file" accept=".pdf,.xlsx" style="display:none" onchange="chatFileSelected(this,'market-chat-file')">
+          <button class="chat-attach" id="market-chat-file-btn" title="Attach document" onclick="document.getElementById('market-chat-file').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="market-chat-file-label"></span>
+            <input class="chat-input" placeholder="Ask about NCUA data…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: REPORTS ═══ -->
+  <div class="page" id="page-reports">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Output Library</div>
+        <div class="page-title">Reports</div>
+        <div class="page-subtitle">All generated reports, exports and compliance documents from this session</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Total Reports</div><div class="stat-val">7</div><div class="stat-delta neu">This session</div></div>
+        <div class="stat-card"><div class="stat-label">PDFs</div><div class="stat-val">3</div><div class="stat-delta neu">Portfolio + Match</div></div>
+        <div class="stat-card"><div class="stat-label">CSV Exports</div><div class="stat-val">4</div><div class="stat-delta neu">Phase 1 + Phase 2</div></div>
+        <div class="stat-card"><div class="stat-label">Last Generated</div><div class="stat-val" style="font-size:16px;">09:41 AM</div><div class="stat-delta neu">Portfolio PDF</div></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-card-header"><div class="panel-card-title">Session Reports</div><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;">Download All</button></div>
+        <div class="panel-card-body" style="display:flex;flex-direction:column;gap:8px;">
+
+          <div class="report-item">
+            <div class="report-icon" style="background:#064e3b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="report-info">
+              <div class="report-name">Refined Portfolio Report — Phase 3</div>
+              <div class="report-meta">Generated 09:41 AM · Loan Boxing · 187 loans · FICO 720+, LTV ≤85%</div>
+            </div>
+            <div class="report-size">PDF · 248 KB</div>
+            <div class="report-dl">⬇ Download</div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-icon" style="background:#1e3a8a"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="report-info">
+              <div class="report-name">Counterparty Match Report — CU_CAPROCK</div>
+              <div class="report-meta">Generated 09:22 AM · Matching Engine · 14 candidates ranked · TX filter</div>
+            </div>
+            <div class="report-size">PDF · 194 KB</div>
+            <div class="report-dl">⬇ Download</div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-icon" style="background:#083344"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div class="report-info">
+              <div class="report-name">NCUA Peer Benchmark — TX Q4 2025</div>
+              <div class="report-meta">Generated 09:15 AM · Market Data · 47 peer CUs · LTD + WA Rate comparison</div>
+            </div>
+            <div class="report-size">PDF · 318 KB</div>
+            <div class="report-dl">⬇ Download</div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-icon" style="background:#064e3b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <div class="report-info">
+              <div class="report-name">Phase 2 Refined Loan Tape — CSV</div>
+              <div class="report-meta">Generated 09:38 AM · Loan Boxing · 187 loans · All columns standardized</div>
+            </div>
+            <div class="report-size">CSV · 92 KB</div>
+            <div class="report-dl">⬇ Download</div>
+          </div>
+
+          <div class="report-item">
+            <div class="report-icon" style="background:#064e3b"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <div class="report-info">
+              <div class="report-name">Phase 1 Loan Tape Summary — CSV</div>
+              <div class="report-meta">Generated 09:30 AM · Loan Boxing · 312 loans · Standard filters applied</div>
+            </div>
+            <div class="report-size">CSV · 210 KB</div>
+            <div class="report-dl">⬇ Download</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel">
+      <div class="chat-header"><div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-docqa">Document QA</span></div><div class="chat-sub">Document QA context · All routes accepted</div></div><div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div></div>
+      <div class="persona-strip"><div class="p-strip-label">Persona</div><div class="p-strip-opts"><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div><div class="p-opt sel" id="di-opt-strip" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div></div></div>
+      <div class="chat-messages">
+        <div class="msg msg-bot">
+          <span class="msg-tag">▸ DOCUMENT_QA · Route D</span>
+          Upload any institutional document — 5300 Call Report, portfolio summary, regulatory filing, or analysis PDF — and ask questions directly against its content.<br><br>
+          <span style="font-size:10px;color:var(--text-dim);">
+            Powered by pdfplumber · Page-prioritised RAG · Preserves table structure
+          </span>
+        </div>
+        <div class="msg msg-bot"><span class="msg-tag">▸ DOCUMENT_QA</span>From the Refined Portfolio Report: WA Rate = <strong style="color:#10b981">7.10%</strong>. WA FICO 741, WA LTV 79.2%, 187 loans qualifying.</div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row"><div class="chip">Yield Summary</div><div class="chip">DPD Breakdown</div><div class="chip">Compare P1 vs P2</div></div>
+        <div class="chat-input-row">
+          <input type="file" id="reports-chat-file" accept=".pdf,.html,.csv,.xlsx" style="display:none" onchange="chatFileSelected(this,'reports-chat-file')">
+          <button class="chat-attach" id="reports-chat-file-btn" title="Attach report" onclick="document.getElementById('reports-chat-file').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="reports-chat-file-label"></span>
+            <input class="chat-input" placeholder="Ask about any report…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: SETTINGS ═══ -->
+  <div class="page" id="page-settings">
+    <div class="content-scroll">
+      <div>
+        <div class="sec-label">Configuration</div>
+        <div class="page-title">Settings</div>
+        <div class="page-subtitle">Platform configuration · Persona · API keys · Route preferences</div>
+      </div>
+
+      <div class="two-col">
+
+        <!-- Persona Config -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">Persona &amp; Session</div></div>
+          <div class="panel-card-body">
+            <div class="settings-row">
+              <div><div class="setting-label">Active Persona</div><div class="setting-sub">Loan Officer — auto-routes to boxing &amp; matching first</div></div>
+              <select style="background:var(--bg-card2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text-pri);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;">
+                <option>Director, LTN (DI)</option><option>Loan Officer (LO)</option><option>Credit Analyst (CA)</option><option>Buyer (BY)</option><option>Seller / CFO (SF)</option><option>Executive (EX)</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">Session History</div><div class="setting-sub">Persist last 10 turns for multi-turn context</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">Long-Term Memory</div><div class="setting-sub">Store preferred filters across sessions (V2)</div></div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">Persona Context Injection</div><div class="setting-sub">Inject persona system prompt into every route</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API Config -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">API &amp; Model Configuration</div></div>
+          <div class="panel-card-body">
+            <div class="settings-row">
+              <div><div class="setting-label">LLM Provider</div><div class="setting-sub">Active inference engine</div></div>
+              <select style="background:var(--bg-card2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text-pri);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;">
+                <option>Gemini 1.5 Flash</option><option>Groq LLaMA 3.1</option><option>Claude Sonnet</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">NCUA Live Feed</div><div class="setting-sub">Auto-refresh on Q-report release</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">RAG Temperature</div><div class="setting-sub">Lower = more factual extraction (current: 0.1)</div></div>
+              <input type="range" min="0" max="10" value="1" style="width:80px;" />
+            </div>
+            <div class="settings-row">
+              <div><div class="setting-label">Intent Router Logs</div><div class="setting-sub">Show StageZeroRouter classification in UI</div></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Route Toggles -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">Route Activation</div></div>
+          <div class="panel-card-body">
+            <div class="settings-row"><div><div class="setting-label">Route A — Matching Engine</div><div class="setting-sub">Seller-buyer pipeline</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="setting-label">Route B — Loan Boxing</div><div class="setting-sub">3-phase tape prep</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="setting-label">Route C — Knowledge Base</div><div class="setting-sub">NCUA 701.22 RAG</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="setting-label">Route D — Document QA</div><div class="setting-sub">PDF interrogation</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="setting-label">Route E — Market Data</div><div class="setting-sub">NCUA live benchmarking</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><div><div class="setting-label">Route F — General Co-Pilot</div><div class="setting-sub">Conversational AI</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+        </div>
+
+        <!-- Default Filters -->
+        <div class="panel-card">
+          <div class="panel-card-header"><div class="panel-card-title">Default Filter Presets</div></div>
+          <div class="panel-card-body" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="filter-row">
+              <div class="filter-field"><label>Default FICO Min</label><input type="number" value="660" /></div>
+              <div class="filter-field"><label>Default LTV Max</label><input type="number" value="115" /></div>
+              <div class="filter-field"><label>Default DTI Max</label><input type="number" value="45" /></div>
+            </div>
+            <div class="filter-row" style="grid-template-columns:1fr 1fr;">
+              <div class="filter-field"><label>Default Geography</label><select><option>Same State</option><option>Regional</option><option>National</option></select></div>
+              <div class="filter-field"><label>Output Format</label><select><option>CSV + PDF</option><option>PDF only</option><option>CSV only</option></select></div>
+            </div>
+            <button class="btn btn-primary" style="align-self:flex-start;">Save Presets</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="pane-resize-handle" data-target="chat-panel"></div>
+
+    <div class="chat-panel">
+      <div class="chat-header"><div><div class="chat-title">Portfolio Co-Pilot <span class="chat-context-badge ctx-general">General Assist</span></div><div class="chat-sub">Route F · Configuration assist</div></div><div class="chat-live"><div class="dot-green" style="width:6px;height:6px;"></div>Live</div></div>
+      <div class="persona-strip"><div class="p-strip-label">Persona</div><div class="p-strip-opts"><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">LO</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">CA</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">BY</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">SF</div><div class="p-opt" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')">EX</div><div class="p-opt sel" id="di-opt-strip" onclick="this.parentElement.querySelectorAll('.p-opt').forEach(e=>e.classList.remove('sel'));this.classList.add('sel')" title="Director, Loan Transaction Network">DI</div></div></div>
+      <div class="chat-messages">
+        <div class="msg msg-bot"><span class="msg-tag">▸ GENERAL_ASSIST · Route F</span>Configuration panel active. I can update your persona, default filters, or toggle routes on your behalf.</div>
+        <div class="msg msg-user">Switch persona to Credit Analyst</div>
+        <div class="msg msg-bot"><span class="msg-tag">▸ PERSONA_MANAGER</span>Persona updated to <strong style="color:#0ea5e9">Credit Analyst (CA)</strong>. Default outputs switched to risk tables + delinquency breakdowns. FICO threshold raised to 700.</div>
+      </div>
+      <div class="chat-footer">
+        <div class="chip-row"><div class="chip">Reset Defaults</div><div class="chip">Switch to Buyer</div><div class="chip">Enable V2 Routes</div></div>
+        <div class="chat-input-row">
+          <input type="file" id="settings-chat-file" accept=".pdf,.txt,.docx" style="display:none" onchange="chatFileSelected(this,'settings-chat-file')">
+          <button class="chat-attach" id="settings-chat-file-btn" title="Attach document" onclick="document.getElementById('settings-chat-file').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+          <div class="chat-input-pill">
+            <span class="chat-file-label" id="settings-chat-file-label"></span>
+            <input class="chat-input" placeholder="Configure via natural language…" />
+            <button class="chat-send" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end app-body -->
+
+<script>
+  function showPage(pageId, navId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    document.getElementById(navId).classList.add('active');
+
+    // Refresh dashboard KPIs from session whenever home page is shown
+    if (pageId === 'home') {
+      refreshDashboardKPIs();
+    }
+  }
+
+  // Pull latest session summary and update dashboard KPI cards
+  async function refreshDashboardKPIs() {
+    try {
+      var res = await fetch('/ltn-summary');
+      if (!res.ok) return;
+      var data = await res.json();
+
+      var elElig    = document.getElementById('dash-stat-eligible');
+      var elEligSub = document.getElementById('dash-stat-eligible-sub');
+      var elPool    = document.getElementById('dash-stat-pool');
+      var elPoolSub = document.getElementById('dash-stat-pool-sub');
+
+      // ── No active session — show empty state, do NOT show stale values ──
+      if (!data.matched_loans && !data.refined_loans) {
+        if (elElig)    elElig.innerHTML = '<span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>';
+        if (elEligSub) { elEligSub.textContent = 'Upload tape · Route B'; elEligSub.className = 'stat-delta neu'; }
+        if (elPool)    elPool.innerHTML = '<span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>';
+        if (elPoolSub) { elPoolSub.textContent = 'Run Phase 2 · Route B'; elPoolSub.className = 'stat-delta neu'; }
+        return;
+      }
+
+      // ── Active session — update with real values ──
+      if (elElig && data.matched_loans) {
+        elElig.textContent = data.matched_loans.toLocaleString();
+        if (elEligSub && data.match_pct !== undefined) {
+          elEligSub.textContent = '▲ ' + parseFloat(data.match_pct).toFixed(1) + '% pass rate · Route B';
+          elEligSub.className = 'stat-delta up';
+        }
+      }
+
+      if (elPool && data.refined_loans > 0) {
+        elPool.textContent = data.refined_loans.toLocaleString();
+        if (elPoolSub) {
+          var waLabel = data.wa_rate
+            ? '▲ WA Rate ' + (parseFloat(data.wa_rate) < 1
+                ? (parseFloat(data.wa_rate) * 100).toFixed(2)
+                : parseFloat(data.wa_rate).toFixed(2)) + '% · Deal ready'
+            : '▲ Phase 2 complete · Execution ready';
+          elPoolSub.textContent = waLabel;
+          elPoolSub.className = 'stat-delta up';
+        }
+      }
+
+    } catch(e) {
+      console.warn('Dashboard KPI refresh failed:', e);
+    }
+  }
+
+  // Refresh on initial page load
+  document.addEventListener('DOMContentLoaded', function() {
+    refreshDashboardKPIs();
+  });
+
+  // Toggle buttons
+  document.querySelectorAll('.p-opt').forEach(opt => {
+    opt.addEventListener('click', function() {
+      this.closest('.p-strip-opts').querySelectorAll('.p-opt').forEach(e => e.classList.remove('sel'));
+      this.classList.add('sel');
+    });
+  });
+
+  // ─── LOGIN LOGIC ───
+  var personaMap = {
+    'CA': { label: 'Credit Analyst',                     role: 'Credit Analyst' },
+    'LO': { label: 'Loan Officer',                       role: 'Loan Officer' },
+    'BY': { label: 'Buyer',                              role: 'Buyer' },
+    'SF': { label: 'Seller / CU CFO',                   role: 'Seller / CU CFO' },
+    'EX': { label: 'Executive',                          role: 'Executive' },
+    'DI': { label: 'Director, Loan Transaction Network', role: 'Director, Loan Transaction Network' }
+  };
+
+  var selectedPersonaA = 'DI';
+
+  function selectPersona(el, code) {
+    document.querySelectorAll('.persona-card').forEach(function(c) { c.classList.remove('selected'); });
+    el.classList.add('selected');
+    selectedPersonaA = code;
+    document.getElementById('lg-err-a').style.display = 'none';
+  }
+
+  function doLoginA() {
+    var user = document.getElementById('lg-user-a').value.trim();
+    var pass = document.getElementById('lg-pass-a').value.trim();
+    if (!user || !pass) {
+      document.getElementById('lg-err-a').textContent = 'Please enter credentials.';
+      document.getElementById('lg-err-a').style.display = 'block';
+      return;
+    }
+    var displayName = user.charAt(0).toUpperCase() + user.slice(1);
+    var persona = personaMap[selectedPersonaA] || personaMap['LO'];
+    document.getElementById('topbar-user-name').textContent = displayName + ' Y.';
+    document.getElementById('topbar-user-role').textContent = persona.role;
+    var av = document.querySelector('.persona-avatar');
+    if (av) av.textContent = (displayName.charAt(0) + 'Y').toUpperCase();
+    // Flask serves index.html directly after login — no login-screen toggle needed
+    // Welcome overlay is triggered by DOMContentLoaded below
+  }
+
+  function dismissWelcome() {
+    var overlay = document.getElementById('welcome-overlay');
+    if (!overlay.classList.contains('show')) return;
+    clearTimeout(window._wcTimer);
+    overlay.classList.add('dismiss');
+    setTimeout(function() {
+      overlay.classList.remove('show');
+      overlay.classList.remove('dismiss');
+    }, 450);
+  }
+
+  function signOutA() {
+    var app    = document.getElementById('app-shell');
+    var screen = document.getElementById('login-screen');
+    app.classList.remove('visible');
+    app.style.display = 'none';
+    screen.classList.remove('fade-out');
+    screen.style.display = 'flex';
+    screen.style.opacity = '1';
+    document.querySelectorAll('.persona-card').forEach(function(c) { c.classList.remove('selected'); });
+    var diCard = document.querySelector('.persona-card[onclick*="DI"]');
+    if (diCard) diCard.classList.add('selected');
+    selectedPersonaA = 'DI';
+    document.getElementById('lg-user-a').value = '';
+    document.getElementById('lg-pass-a').value = '';
+    document.getElementById('lg-err-a').style.display = 'none';
+  }
+
+
+  // ── PANE RESIZE LOGIC (Option A) ──
+  (function() {
+    var dragging = false;
+    var activeHandle = null;
+    var activeChatPanel = null;
+
+    document.addEventListener('mousedown', function(e) {
+      if (!e.target.classList.contains('pane-resize-handle')) return;
+      dragging = true;
+      activeHandle = e.target;
+      activeChatPanel = e.target.nextElementSibling;
+      activeHandle.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging || !activeChatPanel) return;
+      var page = activeChatPanel.closest('.page');
+      if (!page) return;
+      var pageRect = page.getBoundingClientRect();
+      var sidebarW = 56; // sidebar width
+      var newChatW = pageRect.right - e.clientX;
+      var minW = 220, maxW = 520;
+      newChatW = Math.max(minW, Math.min(maxW, newChatW));
+      activeChatPanel.style.width = newChatW + 'px';
+    });
+
+    document.addEventListener('mouseup', function() {
+      if (!dragging) return;
+      dragging = false;
+      if (activeHandle) activeHandle.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      activeHandle = null;
+      activeChatPanel = null;
+    });
+  })();
+
+
+  // ── PORTFOLIO CO-PILOT: CONTEXT-AWARE ROUTING ──
+  var pageToWorkspace = {
+    'LOAN_BOXING':     { page: 'boxing',   nav: 'nav-boxing',   label: 'Loan Boxing Workspace' },
+    'MATCHING_ENGINE': { page: 'matching', nav: 'nav-matching', label: 'Matching Engine Workspace' },
+    'MARKET_DATA':     { page: 'market',   nav: 'nav-market',   label: 'Market Data Workspace' }
+  };
+
+  function getActiveChatPanel() {
+    var activePage = document.querySelector('.page.active');
+    return activePage ? activePage.querySelector('.chat-panel') : null;
+  }
+
+  function updateIntentTag(intentName, routeLabel) {
+    // Find intent pill in active page — look inside the chat panel header area
+    // Intent is shown in chat-sub currently; we update it dynamically
+    var chatPanel = getActiveChatPanel();
+    if (!chatPanel) return;
+    var chatSub = chatPanel.querySelector('.chat-sub');
+    if (chatSub) {
+      chatSub.textContent = routeLabel + ' · Triggered';
+      chatSub.classList.add('intent-tag-pulse');
+      setTimeout(function(){ chatSub.classList.remove('intent-tag-pulse'); }, 400);
+    }
+  }
+
+  function injectChatMessage(intentName, routeLabel, botMessage, hasWorkspace) {
+    var chatPanel = getActiveChatPanel();
+    if (!chatPanel) return;
+    var chatMessages = chatPanel.querySelector('.chat-messages');
+    if (!chatMessages) return;
+
+    // Route activation notice
+    var notice = document.createElement('div');
+    notice.style.cssText = 'font-size:9px;color:#0ea5e9;font-family:"DM Mono",monospace;text-align:center;padding:5px 0;opacity:0.7;border-top:1px solid #1e2d45;margin-top:4px;';
+    notice.textContent = '▸ ' + intentName + ' ACTIVATED';
+    chatMessages.appendChild(notice);
+
+    // Bot message
+    var msgEl = document.createElement('div');
+    msgEl.className = 'msg msg-bot';
+    var msgHtml = '<span class="msg-tag">▸ ' + intentName + ' · ' + routeLabel.split('·')[0].trim() + '</span>' + botMessage;
+
+    // Add "Open Workspace" button if this route has a dedicated page
+    if (hasWorkspace) {
+      var ws = pageToWorkspace[intentName];
+      if (ws) {
+        msgHtml += '<br><button class="open-workspace-btn" onclick="showPage(\'' + ws.page + '\',\'' + ws.nav + '\')">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'
+          + '→ Open ' + ws.label + '</button>';
+      }
+    }
+    msgEl.innerHTML = msgHtml;
+    chatMessages.appendChild(msgEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Flash panel
+    var chatPanelEl = chatPanel;
+    chatPanelEl.classList.remove('flash-active');
+    void chatPanelEl.offsetWidth;
+    chatPanelEl.classList.add('flash-active');
+    chatPanelEl.addEventListener('animationend', function(){
+      chatPanelEl.classList.remove('flash-active');
+    }, { once: true });
+
+    // Focus input
+    var inp = chatPanel.querySelector('.chat-input');
+    if (inp) inp.focus();
+  }
+
+  function activateChatRoute(intentName, routeLabel, botMessage, placeholder) {
+    var hasWorkspace = !!pageToWorkspace[intentName];
+    updateIntentTag(intentName, routeLabel);
+    injectChatMessage(intentName, routeLabel, botMessage, hasWorkspace);
+    var inp = getActiveChatPanel() && getActiveChatPanel().querySelector('.chat-input');
+    if (inp) inp.placeholder = '"' + placeholder + '"';
+  }
+
+
+</script>
+
+
+
+<script>
+  function showPage(pageId, navId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    document.getElementById(navId).classList.add('active');
+
+    // Refresh dashboard KPIs from session whenever home page is shown
+    if (pageId === 'home') {
+      refreshDashboardKPIs();
+    }
+  }
+
+  // Pull latest session summary and update dashboard KPI cards
+  async function refreshDashboardKPIs() {
+    try {
+      var res = await fetch('/ltn-summary');
+      if (!res.ok) return;
+      var data = await res.json();
+
+      var elElig    = document.getElementById('dash-stat-eligible');
+      var elEligSub = document.getElementById('dash-stat-eligible-sub');
+      var elPool    = document.getElementById('dash-stat-pool');
+      var elPoolSub = document.getElementById('dash-stat-pool-sub');
+
+      // ── No active session — show empty state, do NOT show stale values ──
+      if (!data.matched_loans && !data.refined_loans) {
+        if (elElig)    elElig.innerHTML = '<span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>';
+        if (elEligSub) { elEligSub.textContent = 'Upload tape · Route B'; elEligSub.className = 'stat-delta neu'; }
+        if (elPool)    elPool.innerHTML = '<span style="color:var(--text-dim);font-size:18px;font-weight:400;">—</span>';
+        if (elPoolSub) { elPoolSub.textContent = 'Run Phase 2 · Route B'; elPoolSub.className = 'stat-delta neu'; }
+        return;
+      }
+
+      // ── Active session — update with real values ──
+      if (elElig && data.matched_loans) {
+        elElig.textContent = data.matched_loans.toLocaleString();
+        if (elEligSub && data.match_pct !== undefined) {
+          elEligSub.textContent = '▲ ' + parseFloat(data.match_pct).toFixed(1) + '% pass rate · Route B';
+          elEligSub.className = 'stat-delta up';
+        }
+      }
+
+      if (elPool && data.refined_loans > 0) {
+        elPool.textContent = data.refined_loans.toLocaleString();
+        if (elPoolSub) {
+          var waLabel = data.wa_rate
+            ? '▲ WA Rate ' + (parseFloat(data.wa_rate) < 1
+                ? (parseFloat(data.wa_rate) * 100).toFixed(2)
+                : parseFloat(data.wa_rate).toFixed(2)) + '% · Deal ready'
+            : '▲ Phase 2 complete · Execution ready';
+          elPoolSub.textContent = waLabel;
+          elPoolSub.className = 'stat-delta up';
+        }
+      }
+
+    } catch(e) {
+      console.warn('Dashboard KPI refresh failed:', e);
+    }
+  }
+
+  // Refresh on initial page load
+  document.addEventListener('DOMContentLoaded', function() {
+    refreshDashboardKPIs();
+  });
+
+  // Toggle persona strip
+  document.querySelectorAll('.p-opt').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      var strip = this.closest('.p-strip-opts');
+      strip.querySelectorAll('.p-opt').forEach(function(e) { e.classList.remove('sel'); });
+      this.classList.add('sel');
+    });
+  });
+
+// ── PANE RESIZE LOGIC (Option A) ──
+  (function() {
+    var dragging = false;
+    var activeHandle = null;
+    var activeChatPanel = null;
+
+    document.addEventListener('mousedown', function(e) {
+      if (!e.target.classList.contains('pane-resize-handle')) return;
+      dragging = true;
+      activeHandle = e.target;
+      activeChatPanel = e.target.nextElementSibling;
+      activeHandle.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging || !activeChatPanel) return;
+      var page = activeChatPanel.closest('.page');
+      if (!page) return;
+      var pageRect = page.getBoundingClientRect();
+      var sidebarW = 56; // sidebar width
+      var newChatW = pageRect.right - e.clientX;
+      var minW = 220, maxW = 520;
+      newChatW = Math.max(minW, Math.min(maxW, newChatW));
+      activeChatPanel.style.width = newChatW + 'px';
+    });
+
+    document.addEventListener('mouseup', function() {
+      if (!dragging) return;
+      dragging = false;
+      if (activeHandle) activeHandle.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      activeHandle = null;
+      activeChatPanel = null;
+    });
+  })();
+
+// ── PORTFOLIO CO-PILOT: CONTEXT-AWARE ROUTING ──
+  var pageToWorkspace = {
+    'LOAN_BOXING':     { page: 'boxing',   nav: 'nav-boxing',   label: 'Loan Boxing Workspace' },
+    'MATCHING_ENGINE': { page: 'matching', nav: 'nav-matching', label: 'Matching Engine Workspace' },
+    'MARKET_DATA':     { page: 'market',   nav: 'nav-market',   label: 'Market Data Workspace' }
+  };
+
+  function getActiveChatPanel() {
+    var activePage = document.querySelector('.page.active');
+    return activePage ? activePage.querySelector('.chat-panel') : null;
+  }
+
+  function updateIntentTag(intentName, routeLabel) {
+    // Find intent pill in active page — look inside the chat panel header area
+    // Intent is shown in chat-sub currently; we update it dynamically
+    var chatPanel = getActiveChatPanel();
+    if (!chatPanel) return;
+    var chatSub = chatPanel.querySelector('.chat-sub');
+    if (chatSub) {
+      chatSub.textContent = routeLabel + ' · Triggered';
+      chatSub.classList.add('intent-tag-pulse');
+      setTimeout(function(){ chatSub.classList.remove('intent-tag-pulse'); }, 400);
+    }
+  }
+
+  function injectChatMessage(intentName, routeLabel, botMessage, hasWorkspace) {
+    var chatPanel = getActiveChatPanel();
+    if (!chatPanel) return;
+    var chatMessages = chatPanel.querySelector('.chat-messages');
+    if (!chatMessages) return;
+
+    // Route activation notice
+    var notice = document.createElement('div');
+    notice.style.cssText = 'font-size:9px;color:#0ea5e9;font-family:"DM Mono",monospace;text-align:center;padding:5px 0;opacity:0.7;border-top:1px solid #1e2d45;margin-top:4px;';
+    notice.textContent = '▸ ' + intentName + ' ACTIVATED';
+    chatMessages.appendChild(notice);
+
+    // Bot message
+    var msgEl = document.createElement('div');
+    msgEl.className = 'msg msg-bot';
+    var msgHtml = '<span class="msg-tag">▸ ' + intentName + ' · ' + routeLabel.split('·')[0].trim() + '</span>' + botMessage;
+
+    // Add "Open Workspace" button if this route has a dedicated page
+    if (hasWorkspace) {
+      var ws = pageToWorkspace[intentName];
+      if (ws) {
+        msgHtml += '<br><button class="open-workspace-btn" onclick="showPage(\'' + ws.page + '\',\'' + ws.nav + '\')">'
+          + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'
+          + '→ Open ' + ws.label + '</button>';
+      }
+    }
+    msgEl.innerHTML = msgHtml;
+    chatMessages.appendChild(msgEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Flash panel
+    var chatPanelEl = chatPanel;
+    chatPanelEl.classList.remove('flash-active');
+    void chatPanelEl.offsetWidth;
+    chatPanelEl.classList.add('flash-active');
+    chatPanelEl.addEventListener('animationend', function(){
+      chatPanelEl.classList.remove('flash-active');
+    }, { once: true });
+
+    // Focus input
+    var inp = chatPanel.querySelector('.chat-input');
+    if (inp) inp.focus();
+  }
+
+  function activateChatRoute(intentName, routeLabel, botMessage, placeholder) {
+    var hasWorkspace = !!pageToWorkspace[intentName];
+    updateIntentTag(intentName, routeLabel);
+    injectChatMessage(intentName, routeLabel, botMessage, hasWorkspace);
+    var inp = getActiveChatPanel() && getActiveChatPanel().querySelector('.chat-input');
+    if (inp) inp.placeholder = '"' + placeholder + '"';
+  }
+
+  // ── Auto-show welcome overlay ONLY on fresh login, not on every page load ──
+  document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('welcome-overlay');
+    if (!overlay) return;
+
+    // Check if this is a fresh login vs a page navigation/reload
+    // Use sessionStorage so the flag persists within the browser tab session
+    var alreadyShown = sessionStorage.getItem('cfai_welcome_shown');
+    if (alreadyShown) {
+      // Not a fresh login — skip overlay entirely
+      return;
+    }
+
+    // First load in this tab — show overlay and mark as shown
+    sessionStorage.setItem('cfai_welcome_shown', '1');
+    setTimeout(function() {
+      overlay.classList.add('show');
+      window._wcTimer = setTimeout(function() { dismissWelcome(); }, 6000);
+    }, 200);
+  });
+
+
+  // ════════════════════════════════════════════════════════
+  // PORTFOLIO CO-PILOT — BACKEND WIRING
+  // Wires .chat-send buttons + .chat-input fields on all
+  // pages to /chat/message and /chat/upload endpoints.
+  // Preserves existing fetch URLs exactly as in old index.html
+  // ════════════════════════════════════════════════════════
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function getActivePanelParts() {
+    var activePage = document.querySelector('.page.active');
+    if (!activePage) return null;
+    var panel    = activePage.querySelector('.chat-panel');
+    var messages = activePage.querySelector('.chat-messages');
+    var input    = activePage.querySelector('.chat-input');
+    if (!panel || !messages || !input) return null;
+    return { panel: panel, messages: messages, input: input };
+  }
+
+  function appendChatMsg(messages, cls, html) {
+    var el = document.createElement('div');
+    el.className = 'msg ' + cls;
+    el.innerHTML = html;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+    return el;
+  }
+
+  function addThinkingBubble(messages) {
+    var id = 'think-' + Date.now();
+    var el = document.createElement('div');
+    el.id = id;
+    el.className = 'msg msg-bot';
+    el.innerHTML = '<span style="display:inline-block;width:10px;height:10px;border:2px solid #334d6e;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:8px;"></span>Routing to agentic engine…';
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+    return id;
+  }
+
+  function resolveThinking(thinkId, data, messages) {
+    var el = document.getElementById(thinkId);
+    if (!el) return;
+    el.className = 'msg msg-bot';
+    var html = data.answer || 'No response received.';
+
+    if (data.download_url) {
+        var url      = data.download_url;
+        var isCSV    = url.toLowerCase().endsWith('.csv');
+        var isHTML   = url.toLowerCase().endsWith('.html');
+        var filename = url.split('/').pop();
+
+        if (isCSV) {
+            // Auto-trigger download for CSV — don't render in browser
+            var a = document.createElement('a');
+            a.href     = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            html += '<div class="msg-action"><a href="' + url + '" download="' + filename + '">📥 Download Excel/CSV</a></div>';
+
+        } else if (isHTML) {
+            // HTML report — open in new tab
+            html += '<div class="msg-action"><a href="' + url + '" target="_blank">📊 View Portfolio Report</a></div>';
+
+        } else {
+            // PDF or other — open in new tab
+            html += '<div class="msg-action"><a href="' + url + '" target="_blank">📂 Download Report</a></div>';
+        }
+    }
+
+    el.innerHTML = html;
+    messages.scrollTop = messages.scrollHeight;
+
+    // ── After every chat response, refresh all KPIs on both pages immediately ──
+    refreshBoxingKPIsFromSession();
+}
+
+  // Refresh ALL stat cards on both boxing page and dashboard from /ltn-summary
+  // Called after every chat response so KPIs update immediately without navigation
+  async function refreshBoxingKPIsFromSession() {
+    try {
+      var res = await fetch('/ltn-summary');
+      if (!res.ok) return;
+      var d = await res.json();
+      if (!d.matched_loans && !d.tape_size) return; // empty session — nothing to update
+
+      // ── BOXING PAGE ──────────────────────────────────────────────────────
+
+      // Tape Volume (raw loan count)
+      var elTotal = document.getElementById('stat-total');
+      var elTotalSub = document.getElementById('stat-total-sub');
+      if (elTotal && (d.tape_size || d.total_loans)) {
+        var tv = d.tape_size || d.total_loans;
+        elTotal.textContent = parseInt(tv).toLocaleString();
+        if (elTotalSub) elTotalSub.textContent = 'Loans ingested';
+      }
+
+      // Eligible Pool · P1
+      var elP1 = document.getElementById('stat-p1');
+      var elP1Sub = document.getElementById('stat-p1-sub');
+      if (elP1 && d.matched_loans) {
+        elP1.textContent = parseInt(d.matched_loans).toLocaleString();
+        if (elP1Sub && d.match_pct !== undefined) {
+          elP1Sub.textContent = '▲ ' + parseFloat(d.match_pct).toFixed(1) + '% screening rate';
+          elP1Sub.className = 'stat-delta up';
+        }
+      }
+
+      // Participation Pool · P2
+      var elP2 = document.getElementById('stat-p2');
+      var elP2Sub = document.getElementById('stat-p2-sub');
+      if (elP2 && d.refined_loans > 0) {
+        elP2.textContent = parseInt(d.refined_loans).toLocaleString();
+        if (elP2Sub) {
+          elP2Sub.textContent = '▲ Refined · Phase 2 complete';
+          elP2Sub.className = 'stat-delta up';
+        }
+      }
+
+      // Pool WA Rate · P2
+      var elRate = document.getElementById('stat-rate');
+      var elRateSub = document.getElementById('stat-rate-sub');
+      if (elRate && d.wa_rate) {
+        var wr = parseFloat(d.wa_rate);
+        elRate.textContent = (wr < 1 ? (wr * 100).toFixed(2) : wr.toFixed(2)) + '%';
+        if (elRateSub) {
+          elRateSub.textContent = 'Weighted avg coupon';
+          elRateSub.className = 'stat-delta up';
+        }
+      }
+
+      // ── DASHBOARD ────────────────────────────────────────────────────────
+      // Eligible Pool · P1 on dashboard
+      var dElig = document.getElementById('dash-stat-eligible');
+      var dEligSub = document.getElementById('dash-stat-eligible-sub');
+      if (dElig && d.matched_loans) {
+        dElig.textContent = parseInt(d.matched_loans).toLocaleString();
+        if (dEligSub && d.match_pct !== undefined) {
+          dEligSub.textContent = '▲ ' + parseFloat(d.match_pct).toFixed(1) + '% pass rate · Route B';
+          dEligSub.className = 'stat-delta up';
+        }
+      }
+
+      // Participation Pool · P2 on dashboard
+      var dPool = document.getElementById('dash-stat-pool');
+      var dPoolSub = document.getElementById('dash-stat-pool-sub');
+      if (dPool && d.refined_loans > 0) {
+        dPool.textContent = parseInt(d.refined_loans).toLocaleString();
+        if (dPoolSub) {
+          var waLabel = d.wa_rate
+            ? '▲ WA Rate ' + (parseFloat(d.wa_rate) < 1
+                ? (parseFloat(d.wa_rate) * 100).toFixed(2)
+                : parseFloat(d.wa_rate).toFixed(2)) + '% · Deal ready'
+            : '▲ Phase 2 complete · Execution ready';
+          dPoolSub.textContent = waLabel;
+          dPoolSub.className = 'stat-delta up';
+        }
+      }
+
+    } catch(e) {
+      console.warn('KPI refresh failed:', e);
+    }
+  }
+
+  // ── Text message send ──────────────────────────────────
+  async function sendChatMessage(parts) {
+    var text = parts.input.value.trim();
+    if (!text) return;
+
+    appendChatMsg(parts.messages, 'msg-user', escapeHtml(text));
+    parts.input.value = '';
+    var thinkId = addThinkingBubble(parts.messages);
+
+    try {
+      var res = await fetch('/chat/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      if (!res.ok) throw new Error('Server ' + res.status);
+      var data = await res.json();
+      resolveThinking(thinkId, data, parts.messages);
+    } catch(err) {
+      var el = document.getElementById(thinkId);
+      if (el) el.innerHTML = 'Co-Pilot offline. Check Flask server.';
+      console.error('Chat error:', err);
+    }
+  }
+
+  // ── File upload via paperclip ──────────────────────────
+  async function sendChatFile(file, parts) {
+    appendChatMsg(parts.messages, 'msg-user', '&#128206; <em>' + escapeHtml(file.name) + '</em>');
+    var thinkId = addThinkingBubble(parts.messages);
+
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('message', 'Analyzing uploaded file: ' + file.name);
+
+    try {
+      var res = await fetch('/chat/upload', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('Server ' + res.status);
+      var data = await res.json();
+      resolveThinking(thinkId, data, parts.messages);
+    } catch(err) {
+      var el = document.getElementById(thinkId);
+      if (el) el.innerHTML = 'File upload failed. Check Flask server logs.';
+      console.error('Upload error:', err);
+    }
+  }
+
+  // ── Wire all send buttons + Enter key on all pages ─────
+  document.addEventListener('DOMContentLoaded', function() {
+
+    // Wire every .chat-send button
+    document.querySelectorAll('.chat-send').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var parts = getActivePanelParts();
+        if (parts) sendChatMessage(parts);
+      });
+    });
+
+    // Wire Enter key on every .chat-input
+    document.querySelectorAll('.chat-input').forEach(function(inp) {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          var parts = getActivePanelParts();
+          if (parts) sendChatMessage(parts);
+        }
+      });
+    });
+
+    // Wire chip/suggestion clicks
+    document.querySelectorAll('.chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var parts = getActivePanelParts();
+        if (!parts) return;
+        parts.input.value = chip.textContent.trim();
+        sendChatMessage(parts);
+      });
+    });
+  });
+
+  // ── Paperclip file input (shared hidden input) ─────────
+  // Each chat panel footer should have a label[for] pointing to a file input
+  // We inject one shared hidden input and wire it
+  document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.id = 'chat-file-input';
+    fileInput.accept = '.xlsx,.xls,.csv,.pdf,.docx';
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    fileInput.addEventListener('change', function() {
+      if (!this.files || !this.files.length) return;
+      var parts = getActivePanelParts();
+      if (parts) sendChatFile(this.files[0], parts);
+      this.value = '';
+    });
+
+    // Wire any paperclip buttons
+    document.querySelectorAll('.chat-paperclip, .paperclip-btn, [data-action="attach"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.getElementById('chat-file-input').click();
+      });
+    });
+  });
+
+
+  // ════════════════════════════════════════════════════════
+  // FORM UPLOAD WIRING — Boxing + Matching Engine
+  // ════════════════════════════════════════════════════════
+
+  // Track selected files
+  var _boxingFile   = null;
+  var _matchingFile = null;
+
+  // Boxing file input — update drop zone label on selection
+  document.addEventListener('DOMContentLoaded', function() {
+    var boxInp = document.getElementById('boxing-file-input');
+    if (boxInp) {
+      boxInp.addEventListener('change', function() {
+        if (!this.files || !this.files.length) return;
+        _boxingFile = this.files[0];
+        var zone = document.getElementById('boxing-drop-zone');
+        if (zone) {
+          zone.querySelector('.drop-zone-text').textContent = _boxingFile.name;
+          zone.style.borderColor = '#10b981';
+        }
+      });
+    }
+
+    var matchInp = document.getElementById('matching-file-input');
+    if (matchInp) {
+      matchInp.addEventListener('change', function() {
+        if (!this.files || !this.files.length) return;
+        _matchingFile = this.files[0];
+        var zone = document.getElementById('matching-drop-zone');
+        if (zone) {
+          zone.querySelector('.drop-zone-text').textContent = _matchingFile.name;
+          zone.style.borderColor = '#3b82f6';
+        }
+      });
+    }
+  });
+
+  // ── Run Loan Boxing (via chat message route) ────────────
+  // Boxing uses /chat/message with the file staged via /chat/upload
+  async function runBoxingUpload() {
+    // ── FORM BUTTON — sends file + message in ONE multipart request ──
+    // Uses /chat/upload which stages the file AND returns a response.
+    // If download_url present → silent browser download, no chat output.
+
+    var statusEl = document.getElementById('boxing-status');
+    var resultEl = document.getElementById('boxing-result');
+    var btn      = document.getElementById('boxing-run-btn');
+
+    if (!_boxingFile) {
+      statusEl.style.display = 'block';
+      statusEl.style.color   = '#f59e0b';
+      statusEl.textContent   = '⚠ Please select a loan tape file first.';
+      return;
+    }
+
+    statusEl.style.display = 'block';
+    statusEl.style.color   = '#64748b';
+    statusEl.textContent   = '⟳ Running Phase 1 analysis…';
+    resultEl.style.display = 'none';
+    btn.disabled    = true;
+    btn.textContent = '⟳ Running…';
+
+    try {
+      // Single request — file + boxing instruction together via /chat/upload
+      // Backend stages the file and immediately runs boxing if message says so
+      var fd = new FormData();
+      fd.append('file', _boxingFile);
+      fd.append('message', 'Run box assignments for the uploaded loan tape: ' + _boxingFile.name);
+
+      var res = await fetch('/chat/upload', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('Request failed: ' + res.status);
+      var data = await res.json();
+
+      // Check if backend returned a download URL directly
+      if (data.download_url) {
+        // Trigger silent browser download
+        var a = document.createElement('a');
+        a.href = data.download_url;
+        a.download = data.download_url.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){ document.body.removeChild(a); }, 1000);
+
+        statusEl.textContent = '✓ Phase 1 complete — Excel downloading…';
+        statusEl.style.color = '#10b981';
+        resultEl.style.display = 'block';
+        resultEl.innerHTML =
+          '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#0a1f12;border:1px solid #10b981;border-radius:5px;">'
+          + '<span style="font-size:18px;line-height:1;">&#11015;</span>'
+          + '<div style="flex:1;">'
+          + '<div style="font-size:11px;font-weight:600;color:#10b981;margin-bottom:2px;">Phase 1 CSV Downloaded</div>'
+          + '<div style="font-size:10px;color:#6ee7b7;">' + data.download_url.split('/').pop() + '</div>'
+          + '</div>'
+          + '<a href="' + data.download_url + '" target="_blank" '
+          + 'style="font-size:10px;color:#10b981;text-decoration:none;border:1px solid #10b981;padding:3px 8px;border-radius:3px;white-space:nowrap;">Re-download</a>'
+          + '</div>';
+
+      } else if (data.answer) {
+        // Backend returned staging confirmation — now send the boxing command
+        var msgRes = await fetch('/chat/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'Run box assignments for the uploaded loan tape' })
+        });
+        if (!msgRes.ok) throw new Error('Boxing failed: ' + msgRes.status);
+        var msgData = await msgRes.json();
+
+        if (msgData.download_url) {
+          var a = document.createElement('a');
+          a.href = msgData.download_url;
+          a.download = msgData.download_url.split('/').pop();
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function(){ document.body.removeChild(a); }, 1000);
+
+          statusEl.textContent = '✓ Phase 1 complete — Excel downloading…';
+          statusEl.style.color = '#10b981';
+          resultEl.style.display = 'block';
+          resultEl.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#0a1f12;border:1px solid #10b981;border-radius:5px;">'
+            + '<span style="font-size:18px;line-height:1;">&#11015;</span>'
+            + '<div style="flex:1;">'
+            + '<div style="font-size:11px;font-weight:600;color:#10b981;margin-bottom:2px;">Phase 1 CSV Downloaded</div>'
+            + '<div style="font-size:10px;color:#6ee7b7;">' + msgData.download_url.split('/').pop() + '</div>'
+            + '</div>'
+            + '<a href="' + msgData.download_url + '" target="_blank" '
+            + 'style="font-size:10px;color:#10b981;text-decoration:none;border:1px solid #10b981;padding:3px 8px;border-radius:3px;white-space:nowrap;">Re-download</a>'
+            + '</div>';
+        } else {
+          statusEl.textContent = msgData.answer || '✓ Complete.';
+          statusEl.style.color = '#10b981';
+        }
+      }
+
+    } catch(err) {
+      statusEl.textContent = '✗ Error: ' + err.message;
+      statusEl.style.color = '#f87171';
+      console.error('Boxing error:', err);
+    }
+
+    btn.disabled    = false;
+    btn.textContent = '▶ Run Phase 1 Analysis';
+  }
+
+  // ── Run Matching Engine (direct /upload_call_report) ───
+  async function runMatchingUpload() {
+    if (!_matchingFile) {
+      var statusEl = document.getElementById('matching-status');
+      if (statusEl) { statusEl.style.display='block'; statusEl.style.color='#f59e0b'; statusEl.textContent = '⚠ Please select a 5300 Call Report file first.'; }
+      return;
+    }
+
+    var statusEl = document.getElementById('matching-status');
+    var resultEl = document.getElementById('matching-result');
+    var btn      = document.getElementById('matching-run-btn');
+    statusEl.style.display = 'block';
+    statusEl.style.color   = '#64748b';
+    statusEl.textContent   = '⟳ Running ETL and matching engine…';
+    resultEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '⟳ Running…';
+
+    try {
+      var fd = new FormData();
+      fd.append('call_report', _matchingFile);
+      var res = await fetch('/upload_call_report', { method: 'POST', body: fd });
+      if (!res.ok) {
+        var err = await res.json().catch(function(){ return {}; });
+        throw new Error(err.error || res.statusText);
+      }
+      var data = await res.json();
+      statusEl.textContent = '✓ Matching complete. Report generated.';
+      statusEl.style.color = '#10b981';
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '<div style="background:#0d1a2e;border:1px solid #1e3a5a;border-radius:5px;padding:10px 12px;">'
+        + '<a href="' + data.pdf_url + '" target="_blank" style="color:#3b82f6;font-size:12px;font-weight:600;">⬇ Download Seller-Buyer Match Report (PDF)</a>'
+        + '</div>';
+
+    } catch(err) {
+      statusEl.textContent = '✗ Error: ' + err.message;
+      statusEl.style.color = '#f87171';
+      console.error('Matching upload error:', err);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run Matching Engine';
+  }
+
+
+  // ── File picker helper — most reliable cross-browser approach ──
+  function openFilePicker(inputId) {
+    var el = document.getElementById(inputId);
+    if (el) {
+      el.value = ''; // reset so same file can be re-selected
+      el.click();
+    } else {
+      console.warn('File input not found:', inputId);
+    }
+  }
+
+
+  // ════════════════════════════════════════════════════════
+  // PHASE 2 — Filter form intercept + CSV download + distribution update
+  // ════════════════════════════════════════════════════════
+
+  // Track last Phase 2 download URL for Phase 3
+  var _phase2DownloadUrl = null;
+  var _phase2TotalLoans  = 0;
+
+  // Reset Phase 2 filters to defaults
+  function resetPhase2Filters() {
+    var numDefaults = {
+      'p2-fico-min': '', 'p2-fico-max': '',
+      'p2-ltv-min': 0,   'p2-ltv-max': 120,
+      'p2-dti-min': 0,   'p2-dti-max': 55,
+      'p2-term-min': 6,  'p2-term-max': 96,
+      'p2-bal-min': 0,   'p2-bal-max': 150000,
+      'p2-rate-min': 0,  'p2-rate-max': 25,
+      'p2-dpd-min': 0,   'p2-dpd-max': 180
+    };
+    Object.keys(numDefaults).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.value = numDefaults[id];
+    });
+    // Reset product select
+    var prod = document.getElementById('p2-product');
+    if (prod) prod.value = 'AUTO_ALL';
+    // Reset checkboxes to checked
+    ['p2-zero-bal','p2-zero-rate','p2-dq30','p2-matured','p2-term3'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.checked = true;
+    });
+  }
+
+  // Phase 2 form submit — intercept, run via fetch, trigger download + update distribution
+  document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('boxing-phase2-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault(); // prevent native navigation
+
+      var statusEl = document.getElementById('phase2-status');
+      var btn = form.querySelector('button[type="submit"]');
+      statusEl.style.display = 'block';
+      statusEl.textContent = '⟳ Running Phase 2 analysis…';
+      statusEl.style.color = '#64748b';
+      btn.disabled = true;
+      btn.textContent = '⟳ Running…';
+
+      try {
+        var fd = new FormData(form);
+
+        // Phase 2 needs the tape — it uses the session-staged file
+        // We call /ltn-analyze directly with refine action
+        var res = await fetch('/ltn-analyze', {
+          method: 'POST',
+          body: fd
+        });
+
+        if (!res.ok) throw new Error('Server error: ' + res.status);
+
+        // Check if response is a file download (CSV)
+        var contentType = res.headers.get('Content-Type') || '';
+        var contentDisp = res.headers.get('Content-Disposition') || '';
+        var isFile = contentDisp.includes('attachment') ||
+                     contentType.includes('csv') ||
+                     contentType.includes('spreadsheet') ||
+                     contentType.includes('excel') ||
+                     contentType.includes('octet-stream');
+
+        if (isFile) {
+          // It's a file — trigger download
+          var blob = await res.blob();
+          var filename = 'LTN_Refined_Box_Assignment.csv';
+      var match = contentDisp.match(/filename[^;=\\n]*=([^;\\n]*)/);  
+          if (match) filename = match[1].replace(/['"]/g, '').trim();
+
+          var url = URL.createObjectURL(blob);
+          _phase2DownloadUrl = url;
+
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function(){ document.body.removeChild(a); }, 1000);
+
+          statusEl.textContent = '✓ Phase 2 complete — refined CSV downloading…';
+          statusEl.style.color = '#10b981';
+
+          // Refresh Boxing page KPI cards + Dashboard KPIs from session
+          try {
+            var kpiRes = await fetch('/ltn-summary');
+            if (kpiRes.ok) {
+              var kpiData = await kpiRes.json();
+
+              // Participation Pool · P2 on Boxing page
+              var elP2    = document.getElementById('stat-p2');
+              var elP2Sub = document.getElementById('stat-p2-sub');
+              if (elP2 && kpiData.refined_loans !== undefined) {
+                elP2.textContent = kpiData.refined_loans.toLocaleString();
+                if (elP2Sub) {
+                  elP2Sub.textContent = '▲ Refined · Phase 2 complete';
+                  elP2Sub.className = 'stat-delta up';
+                }
+              }
+
+              // Pool WA Rate · P2 on Boxing page
+              var elRate    = document.getElementById('stat-rate');
+              var elRateSub = document.getElementById('stat-rate-sub');
+              if (elRate && kpiData.wa_rate) {
+                var waDisplay = parseFloat(kpiData.wa_rate) < 1
+                  ? (parseFloat(kpiData.wa_rate) * 100).toFixed(2)
+                  : parseFloat(kpiData.wa_rate).toFixed(2);
+                elRate.textContent = waDisplay + '%';
+                if (elRateSub) {
+                  elRateSub.textContent = 'Weighted avg coupon';
+                  elRateSub.className = 'stat-delta up';
+                }
+              }
+
+              // Also refresh Dashboard if user navigates there
+              if (typeof refreshDashboardKPIs === 'function') refreshDashboardKPIs();
+            }
+          } catch(e) { console.warn('KPI refresh failed:', e); }
+
+          // Update download link
+          var dlLink = document.getElementById('p2-download-link');
+          var summaryRow = document.getElementById('p2-summary-row');
+          if (dlLink) { dlLink.href = url; dlLink.download = filename; dlLink.textContent = '⬇ ' + filename; }
+          if (summaryRow) {
+            summaryRow.style.display = 'block';
+            document.getElementById('p2-summary-text').textContent = 'Participation pool ready — ' + filename;
+          }
+
+          // Enable Phase 3
+          var p3btn = document.getElementById('phase3-report-btn');
+          var p3csv = document.getElementById('phase3-csv-btn');
+          if (p3btn) { p3btn.disabled = false; p3btn.style.opacity = '1'; }
+          if (p3csv) { p3csv.disabled = false; p3csv.style.opacity = '1'; p3csv._url = url; p3csv._name = filename; }
+
+          // Fetch updated summary from Flask and update stats + snapshot
+          try {
+            var sumRes = await fetch('/ltn-summary');
+            if (sumRes.ok) {
+              var sumData = await sumRes.json();
+              updateStatsFromSummary(sumData);
+              if (sumData.distribution) updateSnapshot(sumData.distribution);
+            }
+          } catch(e) {
+            console.warn('Could not fetch summary:', e);
+          }
+
+          // Show snapshot results panel
+          document.getElementById('p2-awaiting').style.display = 'none';
+          var resultsEl = document.getElementById('p2-results');
+          resultsEl.style.display = 'flex';
+
+        } else {
+          // JSON response — check for error
+          var data = await res.json();
+          if (data.error) throw new Error(data.error);
+          statusEl.textContent = data.message || '✓ Phase 2 complete.';
+          statusEl.style.color = '#10b981';
+        }
+
+      } catch(err) {
+        statusEl.textContent = '✗ ' + err.message;
+        statusEl.style.color = '#f87171';
+        console.error('Phase 2 error:', err);
+      }
+
+      btn.disabled = false;
+      btn.textContent = '▶ Run Phase 2 Analysis';
+    });
+  });
+
+  // Phase 3 — generate report (calls ltn-analyze with action=report)
+  async function runPhase3Report() {
+    var statusEl = document.getElementById('phase3-status');
+    var btn = document.getElementById('phase3-report-btn');
+    statusEl.style.display = 'block';
+    statusEl.textContent = '⟳ Generating portfolio report…';
+    statusEl.style.color = '#60a5fa';
+    btn.disabled = true;
+    btn.textContent = '⟳ Generating…';
+
+    try {
+      var fd = new FormData();
+      fd.append('action', 'report');
+
+      var res = await fetch('/ltn-analyze', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('Server error: ' + res.status);
+
+      var contentDisp = res.headers.get('Content-Disposition') || '';
+      var blob = await res.blob();
+      var filename = 'LTN_Portfolio_Report.html';
+      var match = contentDisp.match(/filename[^;=\\n]*=([^;\\n]*)/);  
+      if (match) filename = match[1].replace(/['"]/g, '').trim();
+
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ document.body.removeChild(a); }, 1000);
+
+      statusEl.textContent = '✓ Report downloaded — ' + filename;
+      statusEl.style.color = '#10b981';
+
+    } catch(err) {
+      statusEl.textContent = '✗ ' + err.message;
+      statusEl.style.color = '#f87171';
+      console.error('Phase 3 error:', err);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '▶ Generate Portfolio Report';
+  }
+
+  // Phase 3 — quick re-download of Phase 2 CSV
+  function downloadPhase2CSV() {
+    var btn = document.getElementById('phase3-csv-btn');
+    if (btn && btn._url) {
+      var a = document.createElement('a');
+      a.href = btn._url;
+      a.download = btn._name || 'LTN_Refined_Box_Assignment.csv';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ document.body.removeChild(a); }, 500);
+    } else {
+      // Fallback — re-submit Phase 2 form
+      var form = document.getElementById('boxing-phase2-form');
+      if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  }
+
+
+  // ── Dynamic stats update after Phase 2 completes ──
+  function updateStatsFromSummary(s) {
+    // Participation Pool (Phase 2 count)
+    var p2el = document.getElementById('stat-p2');
+    var p2sub = document.getElementById('stat-p2-sub');
+    if (s.refined_loans !== undefined && p2el) {
+      p2el.textContent = s.refined_loans.toLocaleString();
+      if (p2sub) {
+        var pct = s.total_loans > 0 ? ((s.refined_loans / s.total_loans) * 100).toFixed(1) : 0;
+        p2sub.textContent = '▲ ' + pct + '% of tape';
+        p2sub.className = 'stat-delta up';
+      }
+    }
+    // Pool WA Rate
+    var ratel = document.getElementById('stat-rate');
+    var ratesub = document.getElementById('stat-rate-sub');
+    if (s.wa_rate !== undefined && ratel) {
+      ratel.textContent = parseFloat(s.wa_rate).toFixed(2) + '%';
+      if (ratesub) { ratesub.textContent = 'Weighted avg coupon'; ratesub.className = 'stat-delta up'; }
+    }
+    // Also update Phase 1 stats if returned
+    if (s.total_loans !== undefined) {
+      var tel = document.getElementById('stat-total');
+      if (tel) tel.textContent = s.total_loans.toLocaleString();
+    }
+    if (s.matched_loans !== undefined) {
+      var p1el = document.getElementById('stat-p1');
+      if (p1el) p1el.textContent = s.matched_loans.toLocaleString();
+      var p1sub = document.getElementById('stat-p1-sub');
+      if (p1sub && s.match_pct !== undefined) {
+        p1sub.textContent = '▲ ' + parseFloat(s.match_pct).toFixed(1) + '% screening rate';
+        p1sub.className = 'stat-delta up';
+      }
+    }
+  }
+
+  // ── Update Portfolio Snapshot bars from real distribution data ──
+  function updateSnapshot(dist) {
+    // dist expected format:
+    // { fico: [{band:'720-739', count:12}, ...], ltv: [{band:'<=70%', count:5}, ...] }
+    // Also accept flat format from session summary
+    if (!dist) return;
+
+    document.getElementById('p2-awaiting').style.display = 'none';
+    var resultsEl = document.getElementById('p2-results');
+    resultsEl.style.display = 'flex';
+
+    // Update FICO bands
+    var ficoBands = ['fill-fico-1','fill-fico-2','fill-fico-3','fill-fico-4'];
+    var ficoVals  = ['val-fico-1','val-fico-2','val-fico-3','val-fico-4'];
+    if (dist.fico && dist.fico.length) {
+      var maxFico = Math.max.apply(null, dist.fico.map(function(b){ return b.count; })) || 1;
+      dist.fico.forEach(function(b, i) {
+        var fill = document.getElementById(ficoBands[i]);
+        var val  = document.getElementById(ficoVals[i]);
+        if (fill) fill.style.width = Math.max(0, (b.count / maxFico) * 100).toFixed(1) + '%';
+        if (val)  val.textContent  = b.count.toLocaleString() + ' loans';
+      });
+    }
+
+    // Update LTV bands
+    var ltvFills = ['fill-ltv-1','fill-ltv-2','fill-ltv-3'];
+    var ltvVals  = ['val-ltv-1','val-ltv-2','val-ltv-3'];
+    if (dist.ltv && dist.ltv.length) {
+      var maxLtv = Math.max.apply(null, dist.ltv.map(function(b){ return b.count; })) || 1;
+      dist.ltv.forEach(function(b, i) {
+        var fill = document.getElementById(ltvFills[i]);
+        var val  = document.getElementById(ltvVals[i]);
+        if (fill) fill.style.width = Math.max(0, (b.count / maxLtv) * 100).toFixed(1) + '%';
+        if (val)  val.textContent  = b.count.toLocaleString() + ' loans';
+      });
+    }
+  }
+
+
+  // ════════════════════════════════════════════════════════
+  // PHASE 1 — fetch intercept, blob download, page reload for fresh session stats
+  // ════════════════════════════════════════════════════════
+  async function runPhase1Analysis() {
+    var fileInput = document.getElementById('boxing-tape-input');
+    var statusEl  = document.getElementById('phase1-status');
+    var btn       = document.querySelector('#boxing-phase1-form button');
+
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+      statusEl.style.display = 'block';
+      statusEl.style.color   = '#f59e0b';
+      statusEl.textContent   = '⚠ Please select a loan tape file first.';
+      return;
+    }
+
+    statusEl.style.display = 'block';
+    statusEl.style.color   = '#64748b';
+    statusEl.textContent   = '⟳ Running Phase 1 analysis…';
+    btn.disabled = true;
+    btn.textContent = '⟳ Running…';
+
+    try {
+      var fd = new FormData(document.getElementById('boxing-phase1-form'));
+      fd.set('loan_tape', fileInput.files[0]);
+
+      var res = await fetch('/ltn-analyze', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('Server error: ' + res.status);
+
+      // ── Trigger CSV download from blob ──
+      var contentDisp = res.headers.get('Content-Disposition') || '';
+      var blob = await res.blob();
+      var filename = 'LTN_Full_Box_Assignment.csv';
+      var match = contentDisp.match(/filename[^;=\\n]*=([^;\\n]*)/);
+      if (match) filename = match[1].replace(/['"]/g, '').trim();
+
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1000);
+
+      statusEl.textContent = '✓ Phase 1 complete — ' + filename + ' downloaded.';
+      statusEl.style.color = '#10b981';
+
+      // ── Update stat cards directly via /ltn-summary — NO page reload ──
+      // Page reload causes welcome overlay + loses file state
+      try {
+        var sumRes = await fetch('/ltn-summary');
+        if (sumRes.ok) {
+          var sumData = await sumRes.json();
+
+          // Update Tape Volume
+          var elTotal = document.getElementById('stat-total');
+          var elTotalSub = document.getElementById('stat-total-sub');
+          if (elTotal && sumData.total_loans) {
+            elTotal.textContent = sumData.total_loans.toLocaleString();
+            if (elTotalSub) elTotalSub.textContent = 'Loans ingested';
+          }
+
+          // Update Eligible Pool · P1
+          var elP1 = document.getElementById('stat-p1');
+          var elP1Sub = document.getElementById('stat-p1-sub');
+          if (elP1 && sumData.matched_loans !== undefined) {
+            elP1.textContent = sumData.matched_loans.toLocaleString();
+            if (elP1Sub && sumData.match_pct !== undefined) {
+              elP1Sub.textContent = '▲ ' + parseFloat(sumData.match_pct).toFixed(1) + '% screening rate';
+              elP1Sub.className = 'stat-delta up';
+            }
+          }
+
+          // Flash the updated cards green briefly
+          ['stat-total','stat-p1'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+              el.style.transition = 'color 0.3s';
+              el.style.color = '#10b981';
+              setTimeout(function(){ el.style.color = ''; }, 1500);
+            }
+          });
+        }
+      } catch(e) {
+        console.warn('Could not update stats from /ltn-summary:', e);
+      }
+
+    } catch(err) {
+      statusEl.style.color = '#f87171';
+      statusEl.textContent = '✗ Error: ' + err.message;
+      console.error('Phase 1 error:', err);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run Phase 1 Analysis';
+  }
+
+
+  // ════════════════════════════════════════════════════════
+  // CHAT ATTACH — file selection, staging, upload to /chat/upload
+  // ════════════════════════════════════════════════════════
+
+  // Track staged file per panel (keyed by file input ID prefix)
+  var _chatStagedFiles = {};
+
+  function chatFileSelected(input, fileInputId) {
+    if (!input.files || !input.files[0]) return;
+    var file = input.files[0];
+
+    // Show filename label
+    var label = document.getElementById(fileInputId + '-label');
+    var btn   = document.getElementById(fileInputId + '-btn');
+    if (label) {
+      label.textContent = file.name;
+      label.classList.add('visible');
+    }
+    if (btn) btn.classList.add('chat-attach-staged');
+
+    // Store staged file against this input ID
+    _chatStagedFiles[fileInputId] = file;
+
+    // Auto-upload to /chat/upload immediately so backend stages it
+    var fd = new FormData();
+    fd.append('file', file);
+    fd.append('message', 'File attached: ' + file.name);
+
+    // Find the active chat panel's messages container to show staging msg
+    var parts = getActivePanelParts();
+    if (parts && parts.msgs) {
+      var stagingEl = document.createElement('div');
+      stagingEl.className = 'msg msg-bot';
+      stagingEl.innerHTML = '<span style="color:#64748b;font-size:10px;">⟳ Staging ' + file.name + '…</span>';
+      stagingEl.id = 'staging-' + fileInputId;
+      parts.msgs.appendChild(stagingEl);
+      parts.msgs.scrollTop = parts.msgs.scrollHeight;
+    }
+
+    fetch('/chat/upload', { method: 'POST', body: fd })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        // Replace staging message with backend hint
+        var el = document.getElementById('staging-' + fileInputId);
+        if (el) {
+          el.innerHTML = data.answer || ('File staged: <strong>' + file.name + '</strong>');
+        }
+        if (parts && parts.msgs) parts.msgs.scrollTop = parts.msgs.scrollHeight;
+      })
+      .catch(function(err) {
+        var el = document.getElementById('staging-' + fileInputId);
+        if (el) el.innerHTML = '<span style="color:#f87171;">Upload error: ' + err.message + '</span>';
+      });
+  }
+
+  // Clear staged file for a given input after send
+  function clearStagedFile(fileInputId) {
+    _chatStagedFiles[fileInputId] = null;
+    var label = document.getElementById(fileInputId + '-label');
+    var btn   = document.getElementById(fileInputId + '-btn');
+    var input = document.getElementById(fileInputId);
+    if (label) { label.textContent = ''; label.classList.remove('visible'); }
+    if (btn)   btn.classList.remove('chat-attach-staged');
+    if (input) input.value = '';
+  }
+
+  // Get the file input ID for the currently active chat panel
+  function getActiveChatFileId() {
+    var activePage = document.querySelector('.page.active');
+    if (!activePage) return null;
+    var fileInput = activePage.querySelector('input[type="file"][id$="-chat-file"]');
+    return fileInput ? fileInput.id : null;
+  }
+
+</script>
+
+
+<!-- Hidden file inputs for Boxing and Matching upload zones -->
+<input type="file" id="boxing-file-input"   accept=".csv,.xlsx,.xls" style="display:none">
+<input type="file" id="matching-file-input" accept=".xlsx,.xls"      style="display:none">
+
+</body>
+</html>

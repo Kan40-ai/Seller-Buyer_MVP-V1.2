@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LTN Loan Tape Analyzer | Capital Flow AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='ltn_style.css') }}">
+
+    <!-- ADD Font Awesome HERE (for upload icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='ltn_style.css') }}">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        
+        <!-- Hero Section -->
+        <section class="hero-section mb-5 p-5 rounded-4 position-relative overflow-hidden" 
+                 style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+                        color: white;
+                        border: 1px solid rgba(255,255,255,0.1);
+                        backdrop-filter: blur(10px);">
+            
+            <!-- Subtle geometric overlay for Tape Cracker polish -->
+            <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+                <svg viewBox="0 0 200 200" style="position:absolute; top:0; left:0; width:100%; height:100%;">
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="200" height="200" fill="url(#grid)"/>
+                </svg>
+            </div>
+            
+            <div class="row align-items-center g-4">
+                <!-- Hero Text - 70% width -->
+                <div class="col-lg-8 col-md-7">
+                    <h1 class="display-4 fw-bold mb-3 lh-1" 
+                        style="font-size: clamp(2rem, 5vw, 3.5rem); 
+                               font-weight: 700; 
+                               letter-spacing: -0.02em;">
+                        LTN Loan Tape Analyzer
+                    </h1>
+                    <p class="lead fw-semibold mb-4 opacity-95 fs-5" 
+                       style="max-width: 650px; line-height: 1.6;">
+                        Turns raw buyer and seller tapes into clean, box-ready portfolios in minutes—standardizing fields, enforcing quality checks, and surfacing trade-ready loan pools for Capital Flow AI clients.
+                    </p>
+                    <p class="fs-5 fw-medium text-white-75 mb-0" 
+                       style="max-width: 550px; line-height: 1.4;">
+                        Upload any mortgage or auto tape, apply portfolio rules, and instantly benchmark against buyer boxes to support bids, sales, and balance sheet strategy.
+                    </p>
+                </div>
+                
+                <!-- Hero Visual/Upload Teaser - 30% width -->
+                <div class="col-lg-4 col-md-5 text-center">
+                    <!-- <img src="{{ url_for('static', filename='client_logo.png') }}" alt="Capital Flow AI" height="40" class="logo"> -->
+
+                    <div class="logo-wrapper">
+                        <img src="{{ url_for('static', filename='Sample_Logo.jpg') }}" alt="Capital Flow AI" height="40">
+                    </div>
+
+                    <div class="hero-upload-teaser bg-dark bg-opacity-25 rounded-3 p-4 border border-light-subtle" 
+                         style="backdrop-filter: blur(5px); 
+                                min-height: 200px; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                        <div>
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h5 class="text-white-75 mb-0">Ready to Analyze?</h5>
+                            <small class="text-white-75 mb-0">Upload tape below → Get matched boxes instantly</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Bar - Tape Cracker Style -->
+        <section class="feature-bar py-5 mb-5" style="background: #f8fafc;">
+            <div class="container">
+                <div class="row g-4 justify-content-center text-center">
+                
+                <!-- Feature 1: Accelerate Workflow -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card h-100 p-4 rounded-3 position-relative">
+                    <!-- Yellow accent bar -->
+                    <div class="position-absolute start-0 top-0 bottom-0" style="
+                        width: 6px; 
+                        background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%);
+                        border-radius: 4px 0 0 4px;
+                    "></div>
+                    <div class="ps-4">
+                        <i class="fas fa-rocket fa-2x text-warning mb-3"></i>
+                        <h5 class="fw-bold mb-2" style="color: #3b82f6;">Accelerate Tape Prep Workflow</h5>
+                        <p class="text-muted small mb-0">
+                        Automate field mapping, validations, and box assignment so analysts spend time on bids, not spreadsheets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+      
+            <!-- Feature 2: Data Reliability -->
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card h-100 p-4 rounded-3 position-relative">
+                <div class="position-absolute start-0 top-0 bottom-0" style="
+                    width: 6px; 
+                    background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%);
+                    border-radius: 4px 0 0 4px;
+                "></div>
+                <div class="ps-4">
+                    <i class="fas fa-shield-check fa-2x text-warning mb-3"></i>
+                    <h5 class="fw-bold mb-2" style="color: #3b82f6;">Improve Data Reliability</h5>
+                    <p class="text-muted small mb-0">
+                    Catch missing, out-of-range, and inconsistent fields before they hit committees, with transparent audit flags on every row.
+                    </p>
+                </div>
+                </div>
+        </div> 
+      
+        <!-- Feature 3: Box Fit -->
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card h-100 p-4 rounded-3 position-relative">
+            <div class="position-absolute start-0 top-0 bottom-0" style="
+                width: 6px; 
+                background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%);
+                border-radius: 4px 0 0 4px;
+            "></div>
+            <div class="ps-4">
+                <i class="fas fa-puzzle-piece fa-2x text-warning mb-3"></i>
+                <h5 class="fw-bold mb-2" style="color: #3b82f6;">Optimize Buyer Box Fit</h5>
+                <p class="text-muted small mb-0">
+                Test multiple buyer box definitions on the same tape to see coverage, FICO/LTV shifts, and best-fit pools in seconds.
+                </p>
+            </div>
+            </div>
+        </div>
+      
+        <!-- Feature 4: Scenario Bidding -->
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card h-100 p-4 rounded-3 position-relative">
+            <div class="position-absolute start-0 top-0 bottom-0" style="
+                width: 6px; 
+                background: linear-gradient(180deg, #f59e0b 0%, #eab308 100%);
+                border-radius: 4px 0 0 4px;
+            "></div>
+            <div class="ps-4">
+                <i class="fas fa-chart-line fa-2x text-warning mb-3"></i>
+                <h5 class="fw-bold mb-2" style="color: #3b82f6;">Power Scenario Bidding</h5>
+                <p class="text-muted small mb-0">
+                Slice the tape by FICO, LTV, term, or geography to build alternative pools and compare pricing scenarios side by side.
+                </p>
+            </div>
+            </div>
+        </div>
+        
+        </div>
+    </div>
+    </section>
+
+<!-- Pipeline Overview - Tape Cracker Style -->
+<section class="pipeline-section py-5 mb-5 bg-light">
+  <div class="container">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h3 class="display-6 fw-bold mb-3" style="color: #1e293b;">LTN Box Assignment Engine - 3-Step Highlights</h3>
+      <p class="lead text-muted mb-0">3 steps from raw tape to trade-ready pools</p>
+    </div>
+    
+    <!-- 3-Step Cards -->
+    <div class="row g-4 justify-content-center">
+      
+      <!-- Step 1 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4 border rounded-4 h-100 hover-lift">
+          <div class="bg-primary bg-opacity-10 rounded-circle mx-auto mb-3 p-4 d-inline-block" style="width: 80px; height: 80px;">
+            <i class="fas fa-upload fa-2x text-primary"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #3b82f6;">Step 1 – Crack the Tape</h5>
+          <p class="text-muted mb-0">
+            Upload raw loan tape (CSV/XLSX). Engine standardizes fields, fixes issues, runs validation checks.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4 border rounded-4 h-100 hover-lift">
+          <div class="bg-success bg-opacity-10 rounded-circle mx-auto mb-3 p-4 d-inline-block" style="width: 80px; height: 80px;">
+            <i class="fas fa-cubes fa-2x text-success"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #3b82f6;">Step 2 – Define Buyer Boxes</h5>
+          <p class="text-muted mb-0">
+            Configure product, FICO band, LTV/DTI caps, state and balance limits. Tool assigns loans and shows coverage/exceptions.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4 border rounded-4 h-100 hover-lift">
+          <div class="bg-warning bg-opacity-10 rounded-circle mx-auto mb-3 p-4 d-inline-block" style="width: 80px; height: 80px;">
+            <i class="fas fa-download fa-2x text-warning"></i>
+          </div>
+          <h5 class="fw-bold mb-2" style="color: #3b82f6;">Step 3 – Export Pools</h5>
+          <p class="text-muted mb-0">
+            Review stats and strats. Download box-level tapes + exceptions for pricing, hedging, investor distribution.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+        <!-- Main Content Area -->
+        <div class="row">
+            <!-- Sidebar filters + upload -->
+            <div class="col-md-3">
+                <form id="ltnForm" action="/ltn-analyze" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Upload LTN Loan Tape</label>
+                        <input class="form-control" type="file" name="loan_tape" id="loan_tape" accept=".csv,.xls,.xlsx" required>
+                    </div>
+
+                    <hr>
+
+                    <h6>Portfolio Filters: <small class="text-muted">(Apply Filters → Custom Box Summary CSV)</small></h6>
+
+                    <div class="mb-2">
+                        <label class="form-label">Product Type</label>
+                        <select multiple class="form-select" name="product" id="product">
+                            <option value="AUTO_NEW">AUTO_NEW</option>
+                            <option value="AUTO_USED">AUTO_USED</option>
+                            <option value="AUTO_ALL">AUTO_ALL</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">FICO</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="fico_min" placeholder="0", min="0", max="900">
+                            <input type="number" class="form-control" name="fico_max" placeholder="900", min="0", max="900">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">LTV (%)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="ltv_min" placeholder="0" min="0" max="120" step="0.5" value="0">
+                            <input type="number" class="form-control" name="ltv_max" placeholder="120" min="0" max="120" step="0.5" value="120">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="form-label">DTI (%)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="dti_min" placeholder="0" min="0" max="55" step="0.1" value="0">
+                            <input type="number" class="form-control" name="dti_max" placeholder="55" min="0" max="55" step="0.1" value="55">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <label class="form-label">Term (months)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="term_min" placeholder="6" min="6" max="96" step="1" value="6">
+                            <input type="number" class="form-control" name="term_max" placeholder="96" min="6" max="96" step="1" value="96">
+                        </div>
+                    </div>
+
+                    <!-- Balance Filter with checkbox to exclude $0 balance loans -->
+                    <div class="mb-3">
+                        <label class="form-label">Original Balance ($)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control" name="balance_min" placeholder="0" min="0" max="150000" step="1000" value="0">
+                            <input type="number" class="form-control" name="balance_max" placeholder="150000" min="0" max="150000" step="1000" value="150000">
+                        </div>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="remove_zero_balance" id="zero_balance" checked>
+                            <label class="form-check-label fw-medium" style="color: #f97316 !important; font-size: 0.875rem !important;" for="zero_balance">
+                                Exclude $0 balance loans
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Interest Rate Filter with checkbox to exclude 0% rate loans -->
+                    <div class="mb-3">
+                        <label class="form-label small">Interest Rate (%)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" step="0.01" class="form-control form-control-sm" 
+                                name="interest_rate_min" min="0" max="25" value="0" placeholder="0">
+                            <input type="number" step="0.01" class="form-control form-control-sm" 
+                                name="interest_rate_max" min="0" max="25" value="25" placeholder="25">
+                        </div>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="remove_zero_rate" id="zero_rate" checked>
+                            <label class="form-check-label fw-medium" style="color: #f97316 !important; font-size: 0.875rem !important;"
+                                for="zero_rate"> 
+                                Exclude 0% rate loans
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Days Past Due -->
+                    <div class="mb-3">
+                        <label class="form-label small">Days Past Due </label>
+                        <div class="d-flex gap-2">
+                            <input type="number" class="form-control form-control-sm" 
+                                name="days_past_due_min" value="0" min="0" max="180" step="1" placeholder="0">
+                            <input type="number" class="form-control form-control-sm" 
+                                name="days_past_due_max" value="180" min="0" max="180" step="1" placeholder="180">
+                        </div>
+                        
+                        <!-- Checkbox for strict DQ exclusion -->
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="exclude_over_30_dq" id="over_30_dq" checked>
+                            <label class="form-check-label fw-medium" style="color: #f97316 !important; font-size: 0.875rem !important;"
+                                for="over_30_dq">
+                                Exclude >30 days delinquent loans
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Maturity Filters (AFTER Days Past Due) -->
+                    <div class="mb-3">
+                        <label class="form-label small"><i class="fas fa-calendar-alt me-1"></i>Maturity criteria</label>
+                        
+                        <!-- Checkbox 1: Exclude matured -->
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="remove_matured" id="matured" checked>
+                            <label class="form-check-label fw-medium" style="color: #f97316 !important; font-size: 0.875rem !important;"
+                            for="matured">
+                                Exclude matured loans 
+                            </label>
+                        </div>
+                        
+                        <!-- Checkbox 2: Min 3 months remaining -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="min_remaining_term" id="remaining_term" checked>
+                            <label class="form-check-label fw-medium" style="color: #f97316 !important; font-size: 0.875rem !important;"
+                            for="remaining_term">
+                                Exclude loans with 3 months maturity 
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- WA Rate Target Band - INSERT HERE -->
+                    <div class="filter-group reference-band">
+                        <label>🎯 WA Rate Target Band</label>
+                        <div class="range-inputs">
+                            <input type="number" step="0.1" min="0" max="30" name="wa_rate_target_min" 
+                                placeholder="5.0" value="5.0"> %
+                            <span style="padding: 0 10px;">–</span>
+                            <input type="number" step="0.1" min="0" max="30" name="wa_rate_target_max" 
+                                placeholder="15.0" value="15.0"> %
+                        </div>
+                        <small style="color: #666; font-style: italic;">
+                            *Highlights if final WA Rate falls inside/outside band (not a filter)*
+                        </small>
+                    </div>
+
+                    
+                    <!-- Phase 1: Full assignment -->
+                    <button type="submit" class="btn btn-primary w-100" name="action"
+                        value="analyze">
+                        🚀 Generate Full Loan Box (CSV)
+                    </button>
+
+                    <!-- Phase 2: Refined matching -->
+                    <button type="submit"
+                            class="btn btn-success w-100"
+                            name="action"
+                            value="refine">
+                        🎯 Generate Refined Loan Box (Custom Filters) (CSV)
+                    </button>
+
+                    <!-- Phase 3: Executive Report -->
+                    <button type="submit"
+                            name="action"
+                            value="report"
+                            class="btn btn-info w-100">
+                        📊 Executive Summary Report (Refined Loan Box)
+                    </button>
+                </form>
+            </div>
+
+        <!-- Results panel - Phase 1 CSV -->
+        <div class="col-md-9">
+            <div id="status" class="alert alert-info">
+                <strong>Phase 1 - Tape Cracking (Full Matching):</strong> Upload Loan Tape → Instant Box Assignment Summary CSV download. Below loan box matching criteria applied:
+                <ul class="mt-2 mb-0 small">
+                    <li><strong>Product Type:</strong> Target custom product type by AUTO_NEW, AUTO_USED, or AUTO_ALL</li>
+                    <li><strong>FICO Range:</strong> Stratify loans by credit quality (sub-prime to prime)</li>
+                    <li><strong>LTV / DTI:</strong> Assess loan-to-value & debt ratios for risk profiling</li>
+                    <li><strong>Term / Balance:</strong> Categorize by loan duration & origination amount</li>
+                </ul>
+            </div> 
+            
+            <div id="status2" class="alert alert-info">
+                <strong>Phase 2 - Refined Matching:</strong> Apply Filters → Custom Box Summary CSV download.
+                <ul class="mt-2 mb-0 small">
+                    <li><strong>Custom Portfolio:</strong> Target specific loan segments (e.g., FICO 700+, LTV ≤110%)</li>
+                    <li><strong>Risk Calibration:</strong> Isolate high-quality loans for lower-risk strategies</li>
+                    <li><strong>Deal Thesis:</strong> Build investment angle (e.g., "Core Portfolio: Prime Auto Loans")</li>
+                    <li><strong>WA Rate Band Assessment:</strong> Instantly validate yield targets (e.g., 5-9% reference band) with compliance verdict</li>
+                </ul>
+            </div>
+            
+            <!-- <div class="alert alert-success mt-4"> -->
+            <div id="download-complete" class="alert alert-success mt-4 d-none">
+                <h5>✅ <strong>Box Assignment Summary Generated!</strong></h5>
+                <p>Check Downloads: "LTN_Full_Box_Assignment_<strong>X</strong>_loans.csv" (<em>3/4 matched</em>).</p>
+            </div>
+        </div>
+        
+        <script>
+            // Show download message after CSV (runs on page load/refresh post-download)
+            window.addEventListener('load', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('download') === 'success') {
+                    document.getElementById('download-complete').classList.remove('d-none');
+                }
+            });
+        </script>
+
+
+<!-- #----------------FRONT END BLOCK - CHATBOT-------------------# -->
+<style>
+    :root {
+        --primary-navy: #1e3a8a;
+        --secondary-slate: #64748b;
+        --action-emerald: #10b981;
+        --bg-light: #f8fafc;
+    }
+
+    #omni-toggle {
+        position: fixed; bottom: 30px; right: 30px; 
+        background: var(--primary-navy); color: white; 
+        border: none; border-radius: 50%; width: 65px; height: 65px; 
+        box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); 
+        cursor: pointer; z-index: 10000; font-size: 28px;
+        transition: transform 0.2s ease;
+    }
+    #omni-toggle:hover { transform: scale(1.1); }
+
+    #omni-drawer {
+        position: fixed; bottom: 110px; right: 30px; 
+        width: 380px; height: 580px; 
+        background: white; border-radius: 12px; 
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+        display: none; flex-direction: column; 
+        z-index: 9999; overflow: hidden; 
+        border: 1px solid #e2e8f0;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    /* Header with Status Indicator */
+    .omni-header { 
+        background: var(--primary-navy); color: white; 
+        padding: 18px; font-weight: 600; 
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .status-badge { font-size: 10px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+
+    /* Chat Area */
+    #omni-chat-box { flex: 1; padding: 20px; overflow-y: auto; background: var(--bg-light); display: flex; flex-direction: column; gap: 12px; }
+    
+    .msg { padding: 12px 16px; border-radius: 12px; font-size: 13.5px; max-width: 85%; line-height: 1.5; position: relative; }
+    .msg-bot { background: white; border: 1px solid #e2e8f0; align-self: flex-start; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .msg-user { background: var(--primary-navy); color: white; align-self: flex-end; }
+
+    /* Action Buttons within Chat */
+    .action-btn { 
+        display: inline-block; margin-top: 10px; padding: 8px 14px; 
+        background: var(--action-emerald); color: white; 
+        text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 12px;
+        transition: opacity 0.2s;
+    }
+    .logic-link { font-size: 11px; color: var(--secondary-slate); cursor: pointer; text-decoration: underline; display: block; margin-top: 5px; }
+
+    /* Input Footer */
+    .omni-footer { padding: 15px; background: white; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+    .omni-input { flex: 1; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; outline: none; font-size: 13px; }
+    .upload-btn { color: var(--secondary-slate); font-size: 20px; cursor: pointer; }
+</style>
+
+<button id="omni-toggle" onclick="toggleOmni()">🛰️</button>
+
+<div id="omni-drawer">
+    <div class="omni-header">
+        <div>Portfolio Co-Pilot <span class="status-badge">ACTIVE</span></div>
+        <span style="cursor:pointer; opacity: 0.7;" onclick="toggleOmni()">✕</span>
+    </div>
+    <div id="omni-chat-box">
+        <div class="msg msg-bot">
+            <strong>System Initialized.</strong><br>
+            I am currently monitoring your 5300 Call Reports and Portfolio tapes. How would you like to optimize your capital flow today?
+        </div>
+    </div>
+    <div class="omni-footer">
+        <span class="upload-btn" title="Upload Report/Tape">📎</span>
+        <input type="text" id="omni-input" class="omni-input" placeholder="Ask about matching or boxing..." onkeypress="if(event.key==='Enter') sendToOmni()">
+        <button onclick="sendToOmni()" style="background:none; border:none; cursor:pointer; font-size:22px; color: var(--primary-navy);">➤</button>
+    </div>
+</div>
+
+<script>
+    function toggleOmni() {
+        const drawer = document.getElementById('omni-drawer');
+        drawer.style.display = drawer.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    async function sendToOmni() {
+        const input = document.getElementById('omni-input');
+        const chatBox = document.getElementById('omni-chat-box');
+        const text = input.value.trim();
+        if (!text) return;
+
+        chatBox.innerHTML += `<div class="msg msg-user">${text}</div>`;
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Mocking the "Orchestrator" Reasoning process
+        const thinkId = "think-" + Date.now();
+        chatBox.innerHTML += `<div class="msg msg-bot" id="${thinkId}" style="color: #64748b; font-style: italic;">Routing to Agentic Engine...</div>`;
+
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await response.json();
+
+            const thinkingMsg = document.getElementById(thinkId);
+            
+            // Implementation of Suggestion 2 (Intelligence Feedback) & 3 (Actionable Output)
+            let htmlResponse = `<strong>Analysis Complete:</strong><br>${data.answer}`;
+            
+            if (data.download_url) {
+                htmlResponse += `
+                    <div style="margin-top:10px;">
+                        <a href="${data.download_url}" class="action-btn">📂 Download Execution Report</a>
+                        <span class="logic-link" onclick="alert('Logic: Applied LTD > 70% filter and Size-Band match (Small-Mid)')">View Matching Logic</span>
+                    </div>`;
+            }
+
+            thinkingMsg.style.fontStyle = "normal";
+            thinkingMsg.style.color = "#1e293b";
+            thinkingMsg.innerHTML = htmlResponse;
+
+        } catch (e) {
+            document.getElementById(thinkId).innerText = "Co-Pilot is currently offline. Check Flask server.";
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+
+</body>
+</html>

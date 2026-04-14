@@ -1,0 +1,66 @@
+[
+  {
+    "standard_name": "as_of_date",
+    "example_values": ["2025-12-31", "2026-01-31", "2025-11-15"]
+  },
+  {
+    "standard_name": "loan_id",
+    "example_values": ["12345678", "35678", "2589"]
+  },
+  {
+    "standard_name": "auto_direct_indirect",
+    "example_values": ["Direct", "Indirect"]
+  },
+  {
+    "standard_name": "auto_new_used",
+    "example_values": ["New", "Used"]
+  },
+  {
+    "standard_name": "original_balance",
+    "example_values": ["25000", "100000.00", "75000.50"]
+  },
+  {
+    "standard_name": "current_balance",
+    "example_values": ["23000", "98500.50", "45000.25"]
+  },
+  {
+    "standard_name": "current_rate",
+    "example_values": ["5.25", "7.99", "4.75"]
+  },
+  {
+    "standard_name": "origination_date",
+    "example_values": ["2023-06-15", "2021-03-01", "2024-09-20"]
+  },
+  {
+    "standard_name": "maturity_date",
+    "example_values": ["2028-06-15", "2031-03-01", "2029-12-31"]
+  },
+  {
+    "standard_name": "original_term_months",
+    "example_values": ["60", "72", "360"]
+  },
+  {
+    "standard_name": "orig_fico",
+    "example_values": ["720", "645", "780"]
+  },
+  {
+    "standard_name": "orig_ltv",
+    "example_values": ["80", "95.5", "72.3"]
+  },
+  {
+    "standard_name": "dti_back_end",
+    "example_values": ["36", "45.2", "28.5"]
+  },
+  {
+    "standard_name": "state",
+    "example_values": ["TX", "CA", "NY"]
+  },
+  {
+    "standard_name": "year",
+    "example_values": ["2025", "2026", "2024"]
+  },
+  {
+    "standard_name": "days_past_due",
+    "example_values": ["0", "30", "60"]
+  }
+]

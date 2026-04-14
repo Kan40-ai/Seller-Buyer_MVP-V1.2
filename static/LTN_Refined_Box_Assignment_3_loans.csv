@@ -1,0 +1,4 @@
+as_of_date,auto_direct_indirect,auto_new_used,box_id,current_balance,current_rate,days_past_due,dti_back_end,exclusion_reason,in_box_flag,loan_id,maturity_date,orig_fico,orig_ltv,original_balance,original_term_months,origination_date,product_type,state,year
+2025-10-19 00:00:00+00:00,AUTO_DIRECT,AUTO_NEW,AUTO_NEW_660_669,62523.46,12.05,38.0,39.0,None,True,2,2030-11-18 00:00:00+00:00,663.0,94.0,83482,62.0,2025-09-18 00:00:00+00:00,AUTO_NEW,TX,2009
+2025-10-19 00:00:00+00:00,AUTO_INDIRECT,AUTO_NEW,AUTO_NEW_670_699,62523.46,6.01,0.0,26.06,None,True,11,2027-12-07 00:00:00+00:00,689.0,73.91,49851,46.0,2024-02-07 00:00:00+00:00,AUTO_NEW,TX,2006
+2025-10-19 00:00:00+00:00,AUTO_DIRECT,AUTO_NEW,AUTO_NEW_660_669,62523.46,17.73,0.0,30.29,None,True,22,2021-12-22 00:00:00+00:00,663.0,8.06,78945,27.0,2019-09-22 00:00:00+00:00,AUTO_NEW,TX,2022

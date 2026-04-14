@@ -1,0 +1,50 @@
+# ── Web framework ──────────────────────────────────────────
+blinker==1.9.0
+click==8.3.1
+colorama==0.4.6
+Flask==3.1.2
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+Werkzeug==3.1.5
+
+# ── Data processing ────────────────────────────────────────
+et_xmlfile==2.0.0
+numpy==2.4.1
+openpyxl==3.1.5
+pandas==2.3.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+six==1.17.0
+tzdata==2025.3
+
+# ── PDF generation (matching engine reports) ───────────────
+pillow==12.1.0
+reportlab==4.4.9
+
+# ── PDF reading (RAG — pdfplumber used, PyPDF2 as fallback) 
+pdfplumber==0.11.4
+pdfminer.six==20231228
+
+# ── ML pipeline (matching engine scoring) ──────────────────
+joblib==1.5.3
+scikit-learn==1.8.0
+scipy==1.17.0
+threadpoolctl==3.6.0
+charset-normalizer==3.4.4
+
+# ── LLM — intent router + RAG answers ─────────────────────
+groq==0.28.0
+
+# ── NCUA Market Data scraping (Route E) ───────────────────
+requests==2.32.3
+beautifulsoup4==4.13.4
+certifi==2025.4.26
+urllib3==2.4.0
+idna==3.10
+
+python-dotenv==1.1.0
+PyPDF2==3.0.1
+python-docx==1.1.2
+
+sentence-transformers==3.4.1
